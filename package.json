@@ -1,0 +1,19 @@
+{
+  "name": "errand-buddy-backend",
+  "version": "1.0.0",
+  "description": "Backend for Errand Buddy App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MichaelKalamogan/Errand-Buddy-Backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MichaelKalamogan/Errand-Buddy-Backend/issues"
+  },
+  "homepage": "https://github.com/MichaelKalamogan/Errand-Buddy-Backend#readme"
+}
