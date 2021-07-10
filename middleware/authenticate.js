@@ -6,7 +6,7 @@ module.exports = {
     //Check if user is authenticated/logged in to access personal information
     authenticated: (req, res, next) => {
 
-        const token = req.headers('x-auth-token')
+        const token = req.header('x-auth-token')
     
         if(!token) {
             return res.status(401).json({msg: 'Not Logged in'})
@@ -20,7 +20,7 @@ module.exports = {
     //Check if already authenticated/logged in
     alrAuthenticated: (req, res, next) => {
 
-        const token = req.headers('x-auth-token')
+        const token = req.header('x-auth-token')
     
         if(token) {
             return res.redirect('/api/users/dashboard')
