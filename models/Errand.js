@@ -1,18 +1,31 @@
 const mongoose = require('mongoose')
 
-const ErrandSchema = new mongoose.Schema ({
+const ErrandSchema = new mongoose.Schema (
+    {   
+        //User's database user_id to track errands
+        user_id: { type: String, required: true },
 
-    creator: { type: String, required: true },
-    description: { type: String, required: true },
-    dateErrand: { type: Date, required: true },
-    timePickUp: { type: String, required: true },
-    timeDeliver: { type: String, required: true},
-    date_created: { type: Date, default: Date.now },
-    status: { type: String, default: "Awaiting Acceptance" },
-    date_updated: { type: Date, default: Date.now },
-    fulfilled_by: { type: String }
+        //User nickname to be displayed
+        username: { type: String, required: true },
+        category: { type: String, required: true },
+        items: { type: String, required: true },
+        image: { type: String },
+        cloudinary_id: {type: String},
+        description: { type: String, required: true },
+        pickupLocation: { type: String, required: true },
+        deliveryLocation: { type: String, required: true},
+        pickupTime: { type: Date, required: true },
+        deliveryTime: { type: Date, required: true},
+        itemPrice: { type: String, required: true },
+        errandFee: { type: String, required: true },
+        status: { type: String, default: "available" },
+        fulfilled_by: { type: String }
+    }, 
 
-})
+    {   
+        timestamps: true 
+    }
+)
 
 const ErrandModel = mongoose.model ('errand', ErrandSchema)
 

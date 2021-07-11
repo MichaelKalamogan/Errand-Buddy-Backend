@@ -2,16 +2,23 @@ require('dotenv').config()
 const express = require ('express')
 const UserModel = require ('../models/User')
 const ErrandModel = require('../models/Errand')
+const WalletModel = require('../models/Wallet')
 const router = express.Router()
 const bcrypt = require ('bcryptjs')
 const jwt = require ('jsonwebtoken')
+const cloudinary = require('../config/cloudinary-config')
+const multer =  require('multer')
+const streamifier = require('streamifier')
+const { streamUpload } = require('../config/multer-config')
+const nodemailer = require('nodemailer');
+
 
 const controller = {
 
     //Register new user
     register: async(req, res) => {
 
-        const { name, password, password2, email } = req.body
+        const { name, password, password2, email, username } = req.body
 
         //checking if there is already such an email registered in database
         let user = await UserModel.findOne ({
@@ -35,10 +42,19 @@ const controller = {
         //Hashing the password and salt rounds of 10 using bcryptjs
         const hash = await bcrypt.hashSync(password, 10)
 
+        //create new wallet
+        let newWallet = await WalletModel.create({
+            transaction: [{
+                type: "initiate wallet"
+            }]
+        })
+
         await UserModel.create ({
             name: name,
+            username: username,
             email: email,
-            password: hash
+            password: hash,
+            wallet: newWallet.id
         })
 
         res.json({msg: 'User registered'})
@@ -151,19 +167,59 @@ const controller = {
     //Create an Errand
     create: async (req, res) => {
 
-        const { description, dateErrand, timePickUp, timeDeliver } = req.body
+        // let newUpload = await streamUpload(req)
+        
+        const { 
+            category, 
+            items, 
+            username,
+            description, 
+            pickupLocation, 
+            deliveryLocation,
+            pickupTime,
+            deliveryTime,
+            itemPrice,
+            errandFee, 
+        } = req.body
 
-        await ErrandModel.create ({
+        // if (newUpload) {
 
-            creator: req.user.id,
-            description: description,
-            dateErrand: dateErrand,
-            timePickUp: timePickUp,
-            timeDeliver: timeDeliver
+        //     await ErrandModel.create ({
 
-        })
+        //         creator: req.user.id,
+        //         username: req.user.username,
+        //         image: newUpload.secure_url,
+        //         cloudinary_id: newUpload.public_id,
+        //         category: category,
+        //         items: items,
+        //         description: description,
+        //         pickupLocation: pickupLocation,
+        //         deliveryLocation: deliveryLocation,
+        //         pickupTime: pickupTime,
+        //         deliveryTime: deliveryTime,
+        //         itemPrice: itemPrice,
+        //         errandFee: errandFee
+        //     })
 
-        //what to send after this
+        // } else {
+            await ErrandModel.create ({
+
+                user_id: req.user.id,
+                username: username,
+                category: category,
+                items: items,
+                description: description,
+                pickupLocation: pickupLocation,
+                deliveryLocation: deliveryLocation,
+                pickupTime: pickupTime,
+                deliveryTime: deliveryTime,
+                itemPrice: itemPrice,
+                errandFee: errandFee
+            })
+        // }
+
+
+        res.json('Errand successfully created')
 
     },
 
