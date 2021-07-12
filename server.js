@@ -32,8 +32,8 @@ app.get(['/', '/errand-buddy'], indexController.home)
 
 app.use('/api/users', userRouter)
 app.use('/api/errands', errandRouter)
-// app.use('/api/profile', profileRouter)
-// app.use('/api/posts', postsRouter)
+
+
 
 // =======================================
 //             Error Handler
