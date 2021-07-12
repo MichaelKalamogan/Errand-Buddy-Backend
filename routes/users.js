@@ -4,7 +4,9 @@ const router = express.Router()
 const bcrypt = require ('bcryptjs')
 const jwt = require ('jsonwebtoken')
 const userController = require('../controllers/UserController')
+const { upload } = require('../config/multer-config')
 const { alrAuthenticated, authenticated } = require('../middleware/authenticate')
+
 
 // =======================================
 //              USER ROUTES

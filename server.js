@@ -3,10 +3,13 @@
 // =======================================
 require('dotenv').config()
 const express = require('express')
+require('express-async-errors')
 const mongoose = require('mongoose')
 const app = express();
 const PORT = process.env.port || 3000
 
+
+const indexController = require('./controllers/IndexController')
 const userRouter = require('./routes/users')
 const errandRouter =  require('./routes/errands')
 
@@ -24,23 +27,22 @@ app.use(express.json({ extended: false }))
 //              ROUTES
 // =======================================
 
-app.get('/', (req, res) => {
-    res.send('API working')
-})
+//Homepage
+app.get(['/', '/errand-buddy'], indexController.home)
 
 app.use('/api/users', userRouter)
 app.use('/api/errands', errandRouter)
-// app.use('/api/profile', profileRouter)
-// app.use('/api/posts', postsRouter)
+
+
 
 // =======================================
 //             Error Handler
 // =======================================
 
-// app.use(function (err, req, res, next) {
-//     console.error(err.stack)
-//     res.status(500).send('Something broke!')
-// })
+app.use(function (err, req, res, next) {
+    console.error(err.stack)
+    res.status(500).send('Something broke!')
+})
 
 // =======================================
 //              LISTENER
