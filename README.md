@@ -6,7 +6,7 @@ The backend will give you the available errands, sorted by the earliest pickup d
 
 
 - things still left to do:
-
+--all validations
 UserController line 10: validate email and password length
 UserController line 16: flash message that the email is taken. Depending on the frontend framework being used.
 
