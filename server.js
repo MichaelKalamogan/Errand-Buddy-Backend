@@ -6,7 +6,8 @@ const express = require('express')
 require('express-async-errors')
 const mongoose = require('mongoose')
 const app = express();
-const PORT = process.env.port || 3000
+const cors = require('cors')
+const PORT = process.env.port || 4000
 
 
 const indexController = require('./controllers/IndexController')
@@ -21,6 +22,7 @@ mongoose.set('useCreateIndex', true)
 //              MIDDLEWARES
 // =======================================
 app.use(express.json({ extended: false }))
+app.use(cors())
 
 
 // =======================================
