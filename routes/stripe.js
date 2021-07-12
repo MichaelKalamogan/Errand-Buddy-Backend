@@ -1,7 +1,6 @@
 require('dotenv').config()
 const express = require('express')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
-const uuid = require ('uuid)')
 const router = express.Router()
 const { authenticated } = require('../middleware/authenticate')
 

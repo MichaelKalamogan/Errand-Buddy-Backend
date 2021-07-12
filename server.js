@@ -13,6 +13,7 @@ const PORT = process.env.port || 4000
 const indexController = require('./controllers/IndexController')
 const userRouter = require('./routes/users')
 const errandRouter =  require('./routes/errands')
+const paymentRouter =  require('./routes/stripe')
 
 const mongoURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_URL}`
 mongoose.set('useFindAndModify', false)
@@ -31,9 +32,9 @@ app.use(cors())
 
 //Homepage
 app.get(['/', '/errand-buddy'], indexController.home)
-
 app.use('/api/users', userRouter)
 app.use('/api/errands', errandRouter)
+app.post('/api/payment', paymentRouter )
 
 
 
