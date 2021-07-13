@@ -144,8 +144,8 @@ const controller = {
             if (err) {
                 console.log(err)
             } else {
-                req.flash('success_message', 'Reset password link has been sent to your email')
-                res.render('login', {success_message: req.flash('success_message')})
+           
+                res.json({"msg" : "Reset password link has been sent to your email"})
             }
         })
 
