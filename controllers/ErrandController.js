@@ -128,11 +128,9 @@ const controller = {
 
         //Send email to errand poster and buddy to dispute if needed and send review
 
-        let posterEmailBody = `Payment amounting to $${errand_cost} was debited from your wallet for errand id:${errand.id}.
-                                If there are disputes please email us wihtin 14 days. Thank you`
+        let posterEmailBody = `Payment amounting to $${errand_cost} was debited from your wallet for errand id:${errand.id}. If there are disputes please email us within 14 days. Thank you`
 
-        let buddyEmailBody = `Payment amounting to $${errand_cost} was credited to your wallet for errand id:${errand.id}.
-                                If there are disputes please email us wihtin 14 days. Do leave a review of the job. Thank you`
+        let buddyEmailBody = `Payment amounting to $${errand_cost} was credited to your wallet for errand id:${errand.id}. If there are disputes please email us within 14 days. Please also do leave a review of the job. Thank you`
 
         await sendEmail(poster.email, 'Payment debited from wallet', posterEmailBody, 'email send to errand poster')
         await sendEmail(buddy.email, 'Payment credited to wallet', buddyEmailBody, 'email sent to buddy' )
