@@ -3,6 +3,7 @@ const express = require ('express')
 const UserModel = require ('../models/User')
 const ErrandModel = require('../models/Errand')
 const WalletModel = require('../models/Wallet')
+const sendEmail = require('../middleware/email')
 
 
 const controller = {
@@ -56,6 +57,8 @@ const controller = {
             return
         }
 
+
+
         //Change status to completed
         errand = await ErrandModel.findByIdAndUpdate(req.params.id, 
             { 
@@ -68,10 +71,10 @@ const controller = {
             { new : true }
         )
 
-        res.json({"msg": "Job accepted successfully"})
         // transfer money from errand poster wallet to wallet of person who fulfilled
-        let poster =  await UserModel.findById(errand.user_id)
+        let poster = await UserModel.findById(errand.user_id)
         let poster_wallet = await WalletModel.findById(poster.wallet)
+
 
         let errand_cost = Number(errand.itemPrice) + Number(errand.errandFee)
 
@@ -80,7 +83,7 @@ const controller = {
         //Transaction to insert into wallet
         let posterTransaction = {
 
-                prev_bal: poster_wallet.balance,
+                prev_bal: `${poster_wallet.balance}`,
                 new_bal: `${poster_new_balance}`,
                 amount_debited: `${errand_cost}`,
                 type: "Payment for Errand",
@@ -88,20 +91,51 @@ const controller = {
                 to: buddy.username,
                 date: Date.now()
         }
-        
 
         //Update Errand Poster's Wallet
         await WalletModel.findByIdAndUpdate(poster.wallet, 
             {
                 $set : {
-                    balance: poster_balance,
+                    balance: `${poster_new_balance}`,
                 },
                 $push: { transaction : posterTransaction }
             }
         )
         
         //Update Buddy's wallet and balance
-        //send email to errand poster to dispute if needed and send review
+        let buddy_wallet =  await WalletModel.findById(buddy.wallet)
+        let buddy_new_balance =  Number(buddy_wallet.balance) + errand_cost
+
+        let buddyTransaction = {
+
+            prev_bal: `${buddy_wallet.balance}`,
+            new_bal: `${buddy_new_balance}`,
+            amount_credited: `${errand_cost}`,
+            type: "Payment for Errand",
+            from: poster.username,
+            to: buddy.username,
+            date: Date.now()
+        }
+
+        await WalletModel.findByIdAndUpdate(buddy.wallet, 
+            {
+                $set : {
+                    balance: `${buddy_new_balance}`,
+                },
+                $push: { transaction : buddyTransaction }
+            }
+        )
+
+        //Send email to errand poster and buddy to dispute if needed and send review
+
+        let posterEmailBody = `Payment amounting to $${errand_cost} was debited from your wallet for errand id:${errand.id}. If there are disputes please email us within 14 days. Thank you`
+
+        let buddyEmailBody = `Payment amounting to $${errand_cost} was credited to your wallet for errand id:${errand.id}. If there are disputes please email us within 14 days. Please also do leave a review of the job. Thank you`
+
+        await sendEmail(poster.email, 'Payment debited from wallet', posterEmailBody, 'email send to errand poster')
+        await sendEmail(buddy.email, 'Payment credited to wallet', buddyEmailBody, 'email sent to buddy' )
+
+        res.json({"msg": "job completed succesfully"})
     }
 }
 
