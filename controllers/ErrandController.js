@@ -57,6 +57,8 @@ const controller = {
             return
         }
 
+
+
         //Change status to completed
         errand = await ErrandModel.findByIdAndUpdate(req.params.id, 
             { 
@@ -70,8 +72,9 @@ const controller = {
         )
 
         // transfer money from errand poster wallet to wallet of person who fulfilled
-        let poster =  await UserModel.findById(errand.user_id)
+        let poster = await UserModel.findById(errand.user_id)
         let poster_wallet = await WalletModel.findById(poster.wallet)
+
 
         let errand_cost = Number(errand.itemPrice) + Number(errand.errandFee)
 
@@ -88,7 +91,6 @@ const controller = {
                 to: buddy.username,
                 date: Date.now()
         }
-        
 
         //Update Errand Poster's Wallet
         await WalletModel.findByIdAndUpdate(poster.wallet, 
@@ -101,12 +103,12 @@ const controller = {
         )
         
         //Update Buddy's wallet and balance
-
-        let buddy_new_balance =  Number(buddy.wallet.balance) + errand_cost
+        let buddy_wallet =  await WalletModel.findById(buddy.wallet)
+        let buddy_new_balance =  Number(buddy_wallet.balance) + errand_cost
 
         let buddyTransaction = {
 
-            prev_bal: `${buddy.wallet.balance}`,
+            prev_bal: `${buddy_wallet.balance}`,
             new_bal: `${buddy_new_balance}`,
             amount_credited: `${errand_cost}`,
             type: "Payment for Errand",
@@ -115,7 +117,7 @@ const controller = {
             date: Date.now()
         }
 
-        await WalletModel.findByIdAndUpdate(buddy.wallet.id, 
+        await WalletModel.findByIdAndUpdate(buddy.wallet, 
             {
                 $set : {
                     balance: `${buddy_new_balance}`,
@@ -134,6 +136,8 @@ const controller = {
 
         await sendEmail(poster.email, 'Payment debited from wallet', posterEmailBody, 'email send to errand poster')
         await sendEmail(buddy.email, 'Payment credited to wallet', buddyEmailBody, 'email sent to buddy' )
+
+        res.json({"msg": "job completed succesfully"})
     }
 }
 
