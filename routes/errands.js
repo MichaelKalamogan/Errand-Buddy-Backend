@@ -10,5 +10,10 @@ const { authenticated } = require('../middleware/authenticate')
 //Show details of the Errand
 router.get('/show/:id', authenticated, errandController.show)
 
+//When Errand has been accepted by somebody
+router.post('/show/:id/accepted', authenticated, errandController.accept)
+
+//Completing the errand
+router.post('/:id/completed', authenticated, errandController.complete)
 
 module.exports = router

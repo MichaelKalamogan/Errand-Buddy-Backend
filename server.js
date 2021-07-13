@@ -6,12 +6,14 @@ const express = require('express')
 require('express-async-errors')
 const mongoose = require('mongoose')
 const app = express();
-const PORT = process.env.port || 3000
+const cors = require('cors')
+const PORT = process.env.port || 4000
 
 
 const indexController = require('./controllers/IndexController')
 const userRouter = require('./routes/users')
 const errandRouter =  require('./routes/errands')
+const paymentRouter =  require('./routes/stripe')
 
 const mongoURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_URL}`
 mongoose.set('useFindAndModify', false)
@@ -21,6 +23,7 @@ mongoose.set('useCreateIndex', true)
 //              MIDDLEWARES
 // =======================================
 app.use(express.json({ extended: false }))
+app.use(cors())
 
 
 // =======================================
@@ -29,9 +32,9 @@ app.use(express.json({ extended: false }))
 
 //Homepage
 app.get(['/', '/errand-buddy'], indexController.home)
-
 app.use('/api/users', userRouter)
 app.use('/api/errands', errandRouter)
+app.post('/api/payment', paymentRouter )
 
 
 
