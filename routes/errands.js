@@ -16,4 +16,7 @@ router.post('/show/:id/accepted', authenticated, errandController.accept)
 //Completing the errand
 router.post('/:id/completed', authenticated, errandController.complete)
 
+//Reviews for the errand
+router.post('/:id/completed/review', authenticated, errandController.review)
+
 module.exports = router
