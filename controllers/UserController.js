@@ -61,7 +61,7 @@ const controller = {
     },
 
     //Log in
-    login: async (req,res) => {
+    login: async (req, res) => {
 
         const { email, password } = req.body
 
@@ -91,7 +91,7 @@ const controller = {
 
         //Creating the jsonwebtoken
         const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "7 days" })
-
+    
         //Sending the created jsonwebtoken 
         res.json({ token: token })
     },

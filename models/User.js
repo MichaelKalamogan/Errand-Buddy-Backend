@@ -11,7 +11,8 @@ const UserSchema = new Schema (
         wallet: { type: Schema.Types.ObjectId, ref: 'wallet' },
         reviews: [{
             rating: { type: Number },
-            comment: { type: String },
+            review: { type: String },
+            errand_id: { type: String },
             user_name: { type: String },
             user_id: { type: String },
             created: { type: Date, default: Date.now}

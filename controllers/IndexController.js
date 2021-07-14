@@ -12,7 +12,7 @@ const controller = {
 
     //Sending all the errands available 
     home: async (req,res) => {
-
+        console.log(req.cookie)
         let errandsAvailable = await ErrandModel
             .find({ status: "available" })
             .sort({ pickupTime: 1 }) 

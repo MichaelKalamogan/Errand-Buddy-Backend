@@ -23,7 +23,7 @@ const controller = {
         let errand = ErrandModel.findById(req.params.id)
 
         //Ensuring that the person who posted the errand does not accept his own order
-        if (req.user.id === errand.user_id) {
+        if (req.user.id === errand.user_id) { // FE will check the user.id. and if the errand is the same person's, shoudl be a cancel button instead of accept.
 
             res.json({"msg": "Cannot accept own order"})
             return
@@ -31,7 +31,6 @@ const controller = {
         
         await ErrandModel.findByIdAndUpdate(req.params.id, 
             { 
-
                 $set: { 
                     status: 'Accepted: In-Progress',
                     fulfilled_by: req.user.id 
@@ -51,7 +50,7 @@ const controller = {
         let buddy = await UserModel.findById(errand.fulfilled_by)
 
         //Ensuring that the person who accepted the order is the person completing the order
-        if (req.user.id !== buddy.id) {
+        if (req.user.id !== buddy.id) { // FE will check the user.id. and if the errand is the same person's, shoudl be a cancel button instead of accept.
 
             res.json({"msg": "Not your order to complete"})
             return
@@ -95,7 +94,7 @@ const controller = {
         //Update Errand Poster's Wallet
         await WalletModel.findByIdAndUpdate(poster.wallet, 
             {
-                $set : {
+                $set: {
                     balance: `${poster_new_balance}`,
                 },
                 $push: { transaction : posterTransaction }
@@ -133,9 +132,67 @@ const controller = {
         let buddyEmailBody = `Payment amounting to $${errand_cost} was credited to your wallet for errand id:${errand.id}. If there are disputes please email us within 14 days. Please also do leave a review of the job. Thank you`
 
         await sendEmail(poster.email, 'Payment debited from wallet', posterEmailBody, 'email send to errand poster')
-        await sendEmail(buddy.email, 'Payment credited to wallet', buddyEmailBody, 'email sent to buddy' )
+        await sendEmail(buddy.email, 'Payment credited to wallet', buddyEmailBody, 'email sent to buddy')
 
         res.json({"msg": "job completed succesfully"})
+    },
+
+    review: async(req,res) => { 
+
+        const { rating , review } = req.body
+
+        let errand = await ErrandModel.findById(req.params.id)
+
+        if (req.user.id !== errand.fulfilled_by) {
+            res.json({
+                "msg" : "Not authorised to review"
+            })
+
+            return
+        }
+
+        let buddy = await UserModel.findById(errand.fulfilled_by)
+        let poster = await UserModel.findById(errand.user_id)
+        
+        let existing_review = await UserModel.findOne({"reviews.errand_id": errand.id})
+
+        if(existing_review) {
+
+            res.json({
+                "msg" : "Review already provided"
+            })
+
+            return
+        }
+        let newReview = { 
+
+            rating: rating,
+            review: review,
+            errand_id: errand.id,
+            user_name: buddy.username,
+            user_id: buddy.id      
+        }
+
+        await UserModel.findByIdAndUpdate(errand.user_id, {    
+                
+            $push: { reviews : newReview }
+        })
+
+        // let average = await UserModel.aggregate(
+        //     {
+        //         $group: {
+        //             _id: errand.user_id, 
+        //             average: {$avg: "reviews.review"}
+        //         }
+        //     }
+        // )
+
+        console.log(average)
+
+        res.json ({
+
+            "msg" : "Reviews successfully submitted"
+        })
     }
 }
 
