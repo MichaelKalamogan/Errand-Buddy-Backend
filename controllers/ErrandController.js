@@ -4,6 +4,8 @@ const UserModel = require ('../models/User')
 const ErrandModel = require('../models/Errand')
 const WalletModel = require('../models/Wallet')
 const sendEmail = require('../middleware/email')
+const mongoose = require ('mongoose')
+const mongodb = require('mongodb')
 
 
 const controller = {
@@ -156,39 +158,38 @@ const controller = {
         
         let existing_review = await UserModel.findOne({"reviews.errand_id": errand.id})
 
-        if(existing_review) {
+        // if(existing_review) {
 
-            res.json({
-                "msg" : "Review already provided"
-            })
+        //     res.json({
+        //         "msg" : "Review already provided"
+        //     })
 
-            return
-        }
-        let newReview = { 
+        //     return
+        // }
+        // let newReview = { 
 
-            rating: rating,
-            review: review,
-            errand_id: errand.id,
-            user_name: buddy.username,
-            user_id: buddy.id      
-        }
+        //     rating: rating,
+        //     review: review,
+        //     errand_id: errand.id,
+        //     user_name: buddy.username,
+        //     user_id: buddy.id      
+        // }
 
-        await UserModel.findByIdAndUpdate(errand.user_id, {    
+        // await UserModel.findByIdAndUpdate(errand.user_id, {    
                 
-            $push: { reviews : newReview }   
-        })
+        //     $push: { reviews : newReview }   
+        // })
 
-        let average = await UserModel.aggregate([
-
-                { $match: { _id : errand.user_id}},
-                {
-                   $group: {
-                    _id: errand.user_id, 
-                    average: { $avg : "$reviews.rating"}
-                   }    
-                }
-            
-        ])
+        const average = await UserModel.aggregate([
+            { $match: { _id: mongodb.ObjectId(errand.user_id) }},
+            { $unwind: { path: '$reviews' }},
+            { 
+              $group: {
+                _id: '$_id',
+                averageReview: { $avg: '$reviews.rating' },
+              },
+            },
+          ]);
 
         console.log(average)
 
