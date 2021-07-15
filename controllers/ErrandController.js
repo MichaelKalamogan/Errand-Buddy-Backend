@@ -158,27 +158,27 @@ const controller = {
         
         let existing_review = await UserModel.findOne({"reviews.errand_id": errand.id})
 
-        // if(existing_review) {
+        if(existing_review) {
 
-        //     res.json({
-        //         "msg" : "Review already provided"
-        //     })
+            res.json({
+                "msg" : "Review already provided"
+            })
 
-        //     return
-        // }
-        // let newReview = { 
+            return
+        }
+        let newReview = { 
 
-        //     rating: rating,
-        //     review: review,
-        //     errand_id: errand.id,
-        //     user_name: buddy.username,
-        //     user_id: buddy.id      
-        // }
+            rating: rating,
+            review: review,
+            errand_id: errand.id,
+            user_name: buddy.username,
+            user_id: buddy.id      
+        }
 
-        // await UserModel.findByIdAndUpdate(errand.user_id, {    
+        await UserModel.findByIdAndUpdate(errand.user_id, {    
                 
-        //     $push: { reviews : newReview }   
-        // })
+            $push: { reviews : newReview }   
+        })
 
         const average = await UserModel.aggregate([
             { $match: { _id: mongodb.ObjectId(errand.user_id) }},
