@@ -12,9 +12,6 @@ const { alrAuthenticated, authenticated } = require('../middleware/authenticate'
 //              USER ROUTES
 // =======================================
 
-//testing and to be deleted
-router.get('/', (req,res) => res.json({msg:'works'})) 
-
 //Register User
 router.post('/register', alrAuthenticated, userController.register)
 
@@ -25,13 +22,18 @@ router.post('/login', alrAuthenticated, userController.login)
 router.get('/dashboard', authenticated, userController.dashboard)
 
 //Reset Password of user
-router.post('/reset-password', userController.resetPassword)
+router.post('/forgot-password', userController.forgotPassword)
 
 //Create an Errand
 router.post('/create-errand', authenticated, userController.create)
 
-//Accept an Errand
-router.post('/accept-errand', authenticated, userController.acceptErrand) 
+//submit new password
+router.patch('/reset-password/submit', userController.submitResetPassword)
+
+// Reset password page
+router.get('reset-password/:id/:token', userController.resetPassword)
+
+
 
 //Log out the user
 

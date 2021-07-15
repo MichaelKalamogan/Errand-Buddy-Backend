@@ -11,7 +11,7 @@ const { authenticated } = require('../middleware/authenticate')
 router.get('/show/:id', authenticated, errandController.show)
 
 //When Errand has been accepted by somebody
-router.post('/show/:id/accepted', authenticated, errandController.accept)
+router.post('/:id/accepted', authenticated, errandController.accept)
 
 //Completing the errand
 router.post('/:id/completed', authenticated, errandController.complete)

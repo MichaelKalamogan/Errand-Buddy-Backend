@@ -35,7 +35,7 @@ const controller = {
         if(password !== password2) {
             //redirect back to registration page if registered 
             //res.redirect('/api/users/register')
-            res.json({msg:'Passwords do not match'})
+            res.json({ "msg":'Passwords do not match' })
             return
         }
             
@@ -57,7 +57,7 @@ const controller = {
             wallet: newWallet.id
         })
 
-        res.json({msg: 'User registered'})
+        res.json({ "msg" : 'User registered'})
     },
 
     //Log in
@@ -73,7 +73,7 @@ const controller = {
         //If no such user, redirect to registration page
         if (!user) {
             //res.redirect('/api/users/register')
-            return res.status(400).json({ msg:'Invalid credentials'})
+            return res.status(400).json({ "msg" :'Invalid credentials'})
         }
 
         //Match password entered with database password
@@ -81,7 +81,7 @@ const controller = {
 
         //if password don't match, redirect back to login page
         if(!checkPassword) {
-            return res.status(400).json({ msg:'Invalid credentials'})
+            return res.status(400).json({ "msg":'Invalid credentials'})
         }
 
         //Payload for jsonwebtoken
@@ -96,8 +96,8 @@ const controller = {
         res.json({ token: token })
     },
 
-    //Reset Password of user
-    resetPassword: async (req, res) => {
+    //Submit password reset request
+    forgotPassword: async (req, res) => {
 
         const { email } = req.body
 
@@ -122,7 +122,7 @@ const controller = {
         const token = jwt.sign (payload, resetToken, {expiresIn: 60})
 
         //The reset password link that will be sent to the user's email
-        const link = `http://Errand-Buddy-BE.herokuapp.com/reset-password/${user._id}/${token}`
+        const link = `http://Errand-Buddy-BE.herokuapp.com/api/users/reset-password/${user._id}/${token}`
 
         let transport = nodemailer.createTransport({
             host: 'smtp.gmail.com',
@@ -150,6 +150,64 @@ const controller = {
         })
 
     },
+
+    //Reset page if reset link is valid
+    resetPassword: async (req,res) => {
+
+        const {id, token} = req.params
+
+        const resetUser = await UserModel.findOne({_id : id})
+
+        const resetToken = process.env.JWT_SECRET + resetUser.password
+
+
+        try {
+            const decoded = jwt.verify(token, resetToken)
+            
+            res.json({"msg" : "valid link"})
+
+        } catch(error) {
+           console.log(error.message)
+           res.json({"msg": error.message})
+        }
+
+    },
+
+    submitResetPassword: async(req,res) => {
+        
+        
+        const {id, password, password2} = req.body
+
+        //ensuring the user knows the password being keyed in
+        if (password !== password2) {
+
+            res.json({"msg":"passwords don't match"})
+            return
+        }
+
+        //Hash the password using bcrypt and saltrounds of 10
+        const hash = bcrypt.hashSync(password, 10);
+
+        let passUpdate = await UserModel.updateOne(
+            { _id: id},
+
+            {
+                $set: {
+                    password: hash,
+                    updated_at: Date.now()
+                }
+            }
+
+        )
+
+        if (!passUpdate) {
+            res.json ({"msg": 'password update failed'})
+
+        } else {
+
+            res.json ({"msg": 'password updated'})
+        }
+    },  
 
     //User's dashbaord page
     dashboard: async (req, res) => {
@@ -219,14 +277,10 @@ const controller = {
         // }
 
 
-        res.json('Errand successfully created')
+        res.json({'msg': 'Errand successfully created'})
 
     },
 
-    //Accept an Errand
-    acceptErrand: async(req, res) => {
-
-    },
 
     //Log out the user
 
