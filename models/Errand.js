@@ -11,7 +11,12 @@ const ErrandSchema = new mongoose.Schema (
         items: { type: String, required: true },
         image: { type: String },
         cloudinary_id: {type: String},
-        likes: {type: Number, default: 0},
+        likes: [
+            {   
+                total: {type: Number, default: 0},
+                liked_by: [{ type: String }]
+            }
+        ],
         description: { type: String, required: true },
         pickupLocation: { type: String, required: true },
         deliveryLocation: { type: String, required: true},
