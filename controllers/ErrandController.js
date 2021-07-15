@@ -131,8 +131,8 @@ const controller = {
 
         let buddyEmailBody = `Payment amounting to $${errand_cost} was credited to your wallet for errand id:${errand.id}. If there are disputes please email us within 14 days. Please also do leave a review of the job. Thank you`
 
-        await sendEmail(poster.email, 'Payment debited from wallet', posterEmailBody, 'email send to errand poster')
-        await sendEmail(buddy.email, 'Payment credited to wallet', buddyEmailBody, 'email sent to buddy')
+        // await sendEmail(poster.email, 'Payment debited from wallet', posterEmailBody, 'email send to errand poster')
+        // await sendEmail(buddy.email, 'Payment credited to wallet', buddyEmailBody, 'email sent to buddy')
 
         res.json({"msg": "job completed succesfully"})
     },
@@ -175,17 +175,20 @@ const controller = {
 
         await UserModel.findByIdAndUpdate(errand.user_id, {    
                 
-            $push: { reviews : newReview }
+            $push: { reviews : newReview }   
         })
 
-        // let average = await UserModel.aggregate(
-        //     {
-        //         $group: {
-        //             _id: errand.user_id, 
-        //             average: {$avg: "reviews.review"}
-        //         }
-        //     }
-        // )
+        let average = await UserModel.aggregate([
+
+                { $match: { _id : errand.user_id}},
+                {
+                   $group: {
+                    _id: errand.user_id, 
+                    average: { $avg : "$reviews.rating"}
+                   }    
+                }
+            
+        ])
 
         console.log(average)
 
