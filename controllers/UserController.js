@@ -238,6 +238,7 @@ const controller = {
             deliveryTime,
             itemPrice,
             errandFee, 
+            image,
         } = req.body
 
         // if (newUpload) {
@@ -272,7 +273,8 @@ const controller = {
                 pickupTime: pickupTime,
                 deliveryTime: deliveryTime,
                 itemPrice: itemPrice,
-                errandFee: errandFee
+                errandFee: errandFee,
+                image: image
             })
         // }
 

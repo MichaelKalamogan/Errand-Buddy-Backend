@@ -8,7 +8,7 @@ const { authenticated } = require('../middleware/authenticate')
 // =======================================
 
 //Show details of the Errand
-router.get('/show/:id', authenticated, errandController.show)
+router.get('/show/:id', errandController.show)
 
 //When Errand has been accepted by somebody
 router.post('/:id/accepted', authenticated, errandController.accept)
