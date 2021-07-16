@@ -25,7 +25,7 @@ router.get('/dashboard', authenticated, userController.dashboard)
 router.post('/forgot-password', userController.forgotPassword)
 
 //Create an Errand
-router.post('/create-errand', authenticated, userController.create)
+router.post('/create-errand', authenticated, upload.single("image"), userController.create)
 
 //submit new password
 router.patch('/reset-password/submit', userController.submitResetPassword)
