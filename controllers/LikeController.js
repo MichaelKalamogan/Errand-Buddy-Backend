@@ -60,11 +60,11 @@ const controller = {
 
         console.log('tried to remove like')
 
-        const { errand_Id,  userId } = req.body
+        const { errandId,  userId } = req.body
 
-        LikeModel.findOneAndDelete(
+        await LikeModel.findOneAndDelete(
             {
-                errandId: errand_Id,
+                errandId: errandId,
                 userId: userId
             }
         )
