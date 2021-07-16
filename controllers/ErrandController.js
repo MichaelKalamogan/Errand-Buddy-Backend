@@ -4,8 +4,7 @@ const UserModel = require ('../models/User')
 const ErrandModel = require('../models/Errand')
 const WalletModel = require('../models/Wallet')
 const sendEmail = require('../middleware/email')
-const mongoose = require ('mongoose')
-const mongodb = require('mongodb')
+const { Types } = require('mongoose')
 
 
 const controller = {
@@ -15,9 +14,25 @@ const controller = {
         
         //Send details of the errand and a summary of the credibility of the person who posted the ad
         let errandDetails =  await ErrandModel.findById(req.params.id)
-        let userDetails = await UserModel.findById(errandDetails.user_id, 'reviews.rating')
+        let userDetails = await UserModel.findById(errandDetails.user_id, 'username reviews')
+        let userAverage = await UserModel.aggregate([
+            { $match: { _id: Types.ObjectId(errandDetails.user_id)}},
+            { $unwind: { path: '$reviews' }},
+            { 
+              $group: {
+                _id: '$_id',
+                averageReview: { $avg: '$reviews.rating' },
+              },
+            },
+        ]);
 
-        res.json({errandDetails: errandDetails, userDetails: userDetails})
+        res.json(
+            {
+                errandDetails: errandDetails, 
+                userDetails: userDetails, 
+                averageRating: userAverage
+            }
+        )
     },
 
     accept: async (req,res) => {
@@ -166,11 +181,13 @@ const controller = {
 
             return
         }
+
         let newReview = { 
 
             rating: rating,
             review: review,
             errand_id: errand.id,
+            errand_summary: errand.items,
             user_name: buddy.username,
             user_id: buddy.id      
         }
@@ -180,23 +197,32 @@ const controller = {
             $push: { reviews : newReview }   
         })
 
-        const average = await UserModel.aggregate([
-            { $match: { _id: mongodb.ObjectId(errand.user_id) }},
-            { $unwind: { path: '$reviews' }},
-            { 
-              $group: {
-                _id: '$_id',
-                averageReview: { $avg: '$reviews.rating' },
-              },
-            },
-          ]);
-
-        console.log(average)
-
         res.json ({
 
             "msg" : "Reviews successfully submitted"
         })
+    },
+
+    delete: async(req, res) => {
+
+        let deleteErrand = await ErrandModel.findById(req.params.id)
+
+        if (deleteErrand.user_id !== req.user.id) {
+            res.status(403).json({
+                "msg":"Not authorised to delete"
+            })
+
+            return
+        }
+
+        await ErrandModel.deleteOne( {_id: req.params.id})
+
+        if(deleteErrand.cloudinary_id) {
+            await cloudinary.uploader.destroy(deleteErrand.cloudinary_id)
+        }
+
+        res.json({ "msg" : "success" })
+
     }
 }
 

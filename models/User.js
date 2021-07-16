@@ -13,6 +13,7 @@ const UserSchema = new Schema (
             rating: { type: Number },
             review: { type: String },
             errand_id: { type: String },
+            errand_summary: { type: String },
             user_name: { type: String },
             user_id: { type: String },
             created: { type: Date, default: Date.now}
