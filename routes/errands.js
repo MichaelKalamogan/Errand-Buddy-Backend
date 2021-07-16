@@ -8,8 +8,14 @@ const { authenticated } = require('../middleware/authenticate')
 //              ERRANDS ROUTES
 // =======================================
 
-//Like the Errand
+//Retrieve likes
 router.post('/like', likeController.like)
+
+//Add likes
+router.post('/like/addLike', likeController.addLike)
+
+//Remove likes
+router.post('/like/removeLike', likeController.removeLike)
 
 //Show details of the Errand
 router.get('/show/:id', errandController.show)
