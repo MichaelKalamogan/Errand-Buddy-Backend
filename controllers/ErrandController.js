@@ -187,6 +187,7 @@ const controller = {
             rating: rating,
             review: review,
             errand_id: errand.id,
+            errand_summary: errand.items,
             user_name: buddy.username,
             user_id: buddy.id      
         }
@@ -200,6 +201,28 @@ const controller = {
 
             "msg" : "Reviews successfully submitted"
         })
+    },
+
+    delete: async(req, res) => {
+
+        let deleteErrand = await ErrandModel.findById(req.params.id)
+
+        if (deleteErrand.user_id !== req.user.id) {
+            res.status(403).json({
+                "msg":"Not authorised to delete"
+            })
+
+            return
+        }
+
+        await ErrandModel.deleteOne( {_id: req.params.id})
+
+        if(deleteErrand.cloudinary_id) {
+            await cloudinary.uploader.destroy(deleteErrand.cloudinary_id)
+        }
+
+        res.json({ "msg" : "success" })
+
     }
 }
 

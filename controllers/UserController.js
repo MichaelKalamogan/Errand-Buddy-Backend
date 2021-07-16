@@ -93,7 +93,12 @@ const controller = {
         const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "7 days" })
     
         //Sending the created jsonwebtoken 
-        res.json({ token: token })
+        res.json(
+            { 
+                "msg": "success", 
+                token: token,
+                userId: user.id
+            })
     },
 
     //Submit password reset request
