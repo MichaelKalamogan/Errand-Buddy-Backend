@@ -219,17 +219,30 @@ const controller = {
 
         //Getting the user details and errands created
         let user = await UserModel.findById(req.user.id).select("-password")
-        let user_errands = await ErrandModel.find({creator: req.user.id})
+        let user_errands = await ErrandModel.find({ creator: req.user.id })
+        // added
+        let balance = await WalletModel.findById(user.wallet);
+        let inProgress = await ErrandModel.find({
+            fulfilled_by: req.user.id, 
+            status: "Accepted: In-Progress"
+        })
+        let completed = await ErrandModel.find({
+            fulfilled_by: req.user.id, 
+            status: "Completed"
+        })
 
         res.json({
             user: user, 
-            errands: user_errands
+            errands: user_errands,
+            balance,
+            inProgress,
+            completed
         })
     },
 
     //Create an Errand
     create: async (req, res) => {
-
+console.log(465666);
         const { 
             category, 
             items, 
@@ -246,6 +259,8 @@ const controller = {
         let newUpload = await streamUpload(req)
 
         const user = await UserModel.find({_id: req.user.id}, 'username')
+
+        console.log(items, 123456);
 
         await ErrandModel.create ({
 
