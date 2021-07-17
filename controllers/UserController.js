@@ -242,7 +242,6 @@ const controller = {
 
     //Create an Errand
     create: async (req, res) => {
-console.log(465666);
         const { 
             category, 
             items, 
@@ -259,8 +258,6 @@ console.log(465666);
         let newUpload = await streamUpload(req)
 
         const user = await UserModel.find({_id: req.user.id}, 'username')
-
-        console.log(items, 123456);
 
         await ErrandModel.create ({
 
