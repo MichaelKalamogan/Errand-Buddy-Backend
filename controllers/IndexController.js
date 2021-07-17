@@ -18,6 +18,7 @@ const controller = {
             .sort({ pickupTime: 1 }) 
 
         res.json(errandsAvailable)
+
     }
 }
 

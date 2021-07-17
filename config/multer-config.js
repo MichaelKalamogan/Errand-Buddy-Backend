@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 const upload = multer()
 
 function streamUpload (req) {
-  if (req.file) {
+  
   return new Promise((resolve, reject) => {
       let stream = cloudinary.uploader.upload_stream(
         (error, result) => {
@@ -29,7 +29,6 @@ function streamUpload (req) {
 
      streamifier.createReadStream(req.file.buffer).pipe(stream);
   });
-  }
   
 };
 

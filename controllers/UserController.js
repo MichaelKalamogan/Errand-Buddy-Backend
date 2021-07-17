@@ -230,12 +230,9 @@ const controller = {
     //Create an Errand
     create: async (req, res) => {
 
-        // let newUpload = await streamUpload(req)
-        
         const { 
             category, 
             items, 
-            username,
             description, 
             pickupLocation, 
             deliveryLocation,
@@ -243,48 +240,37 @@ const controller = {
             deliveryTime,
             itemPrice,
             errandFee, 
-            image,
+
         } = req.body
 
-        // if (newUpload) {
+        let newUpload = await streamUpload(req)
 
-        //     await ErrandModel.create ({
+        const user = await UserModel.find({_id: req.user.id}, 'username')
 
-        //         creator: req.user.id,
-        //         username: req.user.username,
-        //         image: newUpload.secure_url,
-        //         cloudinary_id: newUpload.public_id,
-        //         category: category,
-        //         items: items,
-        //         description: description,
-        //         pickupLocation: pickupLocation,
-        //         deliveryLocation: deliveryLocation,
-        //         pickupTime: pickupTime,
-        //         deliveryTime: deliveryTime,
-        //         itemPrice: itemPrice,
-        //         errandFee: errandFee
-        //     })
+        await ErrandModel.create ({
 
-        // } else {
-            await ErrandModel.create ({
+            user_id: req.user.id,
+            username: user[0].username,
+            category: category,
+            items: items,
+            image: newUpload.secure_url,
+            cloudinary_id: newUpload.public_id,
+            description: description,
+            pickupLocation: pickupLocation,
+            deliveryLocation: deliveryLocation,
+            pickupTime: pickupTime,
+            deliveryTime: deliveryTime,
+            itemPrice: itemPrice,
+            errandFee: errandFee,
 
-                user_id: req.user.id,
-                username: username,
-                category: category,
-                items: items,
-                description: description,
-                pickupLocation: pickupLocation,
-                deliveryLocation: deliveryLocation,
-                pickupTime: pickupTime,
-                deliveryTime: deliveryTime,
-                itemPrice: itemPrice,
-                errandFee: errandFee,
-                image: image
-            })
-        // }
+        })
 
-
-        res.json({'msg': 'Errand successfully created'})
+        res.json(
+            {
+                success: true,
+                'msg': 'Errand successfully created'
+            }
+        )
 
     },
 

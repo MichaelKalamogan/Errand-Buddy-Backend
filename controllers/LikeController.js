@@ -29,12 +29,10 @@ const controller = {
                 likes
             })
         
-        console.log('likes retrieved')
+
     },
 
     addLike: async (req, res) => {
-
-        console.log('tried to add like')
 
         const { errandId,  userId } = req.body
 
@@ -50,15 +48,10 @@ const controller = {
                 success: true,
                 "msg": "Liked"
             })
-        }
-
-        console.log('like added')
-        
+        }       
     },
 
     removeLike: async (req, res) => {
-
-        console.log('tried to remove like')
 
         const { errandId,  userId } = req.body
 
@@ -72,11 +65,8 @@ const controller = {
         res.status(200).json ({
             success: true,
             "msg": "Like removed"
-        })
-        console.log('like removed')
-        
+        })       
     },
-
 }
 
 module.exports = controller
