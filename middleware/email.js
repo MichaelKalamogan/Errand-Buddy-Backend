@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 
 
 //Function to send an email
-function sendEmail(emailAdd, subject, emailBody, successMsg ) {
+function sendEmail(emailAdd, subject, emailBody) {
 
     let transport = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -24,10 +24,7 @@ function sendEmail(emailAdd, subject, emailBody, successMsg ) {
     transport.sendMail(message, function(err, info) {
         if (err) {
             console.log(err)
-        } else {
-       
-            res.json({"msg" : `${successMsg}`})
-        }
+        } 
     })
 }
 
