@@ -2,6 +2,7 @@ const express = require('express')
 const errandController = require('../controllers/ErrandController')
 const likeController = require('../controllers/LikeController')
 const router = express.Router()
+const { upload } = require('../config/multer-config')
 const { authenticated } = require('../middleware/authenticate')
 
 // =======================================
@@ -25,6 +26,12 @@ router.post('/:id/accepted', authenticated, errandController.accept)
 
 //Completing the errand
 router.post('/:id/completed', authenticated, errandController.complete)
+
+//Info to update the errand
+router.get('/:id/update', authenticated, errandController.edit)
+
+//Update the errand
+router.post('/:id/update', authenticated, upload.single("image"), errandController.update)
 
 //Deleting the errand
 router.post('/:id/delete', authenticated, errandController.delete)

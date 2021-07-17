@@ -258,24 +258,45 @@ const controller = {
         let newUpload = await streamUpload(req)
 
         const user = await UserModel.find({_id: req.user.id}, 'username')
+        
+        if (newUpload) {
 
-        await ErrandModel.create ({
+            await ErrandModel.create ({
 
-            user_id: req.user.id,
-            username: user[0].username,
-            category: category,
-            items: items,
-            image: newUpload.secure_url,
-            cloudinary_id: newUpload.public_id,
-            description: description,
-            pickupLocation: pickupLocation,
-            deliveryLocation: deliveryLocation,
-            pickupTime: pickupTime,
-            deliveryTime: deliveryTime,
-            itemPrice: itemPrice,
-            errandFee: errandFee,
+                user_id: req.user.id,
+                username: user[0].username,
+                category: category,
+                items: items,
+                image: newUpload.secure_url,
+                cloudinary_id: newUpload.public_id,
+                description: description,
+                pickupLocation: pickupLocation,
+                deliveryLocation: deliveryLocation,
+                pickupTime: pickupTime,
+                deliveryTime: deliveryTime,
+                itemPrice: itemPrice,
+                errandFee: errandFee,
+    
+            })
 
-        })
+        } else {
+
+            await ErrandModel.create ({
+
+                user_id: req.user.id,
+                username: user[0].username,
+                category: category,
+                items: items,
+                description: description,
+                pickupLocation: pickupLocation,
+                deliveryLocation: deliveryLocation,
+                pickupTime: pickupTime,
+                deliveryTime: deliveryTime,
+                itemPrice: itemPrice,
+                errandFee: errandFee,
+    
+            })
+        }
 
         res.json(
             {
@@ -284,11 +305,7 @@ const controller = {
             }
         )
 
-    },
-
-    //Log out the user
-
-
+    }
 }
 
 module.exports = controller

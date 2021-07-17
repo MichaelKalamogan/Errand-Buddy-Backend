@@ -148,12 +148,13 @@ const controller = {
 
         let buddyEmailBody = `Payment amounting to $${errand_cost} was credited to your wallet for errand id:${errand.id}. If there are disputes please email us within 14 days. Please also do leave a review of the job. Thank you`
 
-        // await sendEmail(poster.email, 'Payment debited from wallet', posterEmailBody, 'email send to errand poster')
-        // await sendEmail(buddy.email, 'Payment credited to wallet', buddyEmailBody, 'email sent to buddy')
+        // await sendEmail(poster.email, 'Payment debited from wallet', posterEmailBody)
+        // await sendEmail(buddy.email, 'Payment credited to wallet', buddyEmailBody)
 
         res.json({"msg": "job completed succesfully"})
     },
-
+    
+    //
     review: async(req,res) => { 
 
         const { rating , review } = req.body
@@ -203,6 +204,127 @@ const controller = {
         })
     },
 
+    //Sending the errand information to render in the frontend for updating
+    edit: async(req,res) => {
+
+        let updateErrand = await ErrandModel.findById(req.params.id)
+
+        res.json(
+            {
+                success: true,
+                updateErrand
+            }
+        )
+    },
+
+    //Updating the database with the updated errand details
+    update: async(req,res) => {
+
+        const { 
+            category, 
+            items, 
+            description, 
+            pickupLocation, 
+            deliveryLocation,
+            pickupTime,
+            deliveryTime,
+            itemPrice,
+            errandFee, 
+
+        } = req.body
+
+        let updateErrand = await ErrandModel.findById(req.params.id)
+
+        if (updateErrand.user_id !== req.user.id) {
+            res.status(403).json({
+                "msg":"Not authorised to delete"
+            })
+
+            return
+        }
+
+        //To send an email, if needed, to the buddy to inform him of changes
+        let order_accepted =  false
+        if (errand.status === "Accepted: In-Progress") {
+            order_accepted = true
+        }
+
+        if(errand.status === "Completed") {
+            res.json({
+                "msg" : "Not allowed to amend completed orders"
+            })
+
+            return
+        }
+
+        let newUpload = await streamUpload(req)
+        let updatedErrand
+
+        if(newUpload) {
+
+            if(updateErrand.cloudinary_id) {
+                cloudinary.uploader.destroy(updateErrand.cloudinary_id)
+            }
+
+            await ErrandModel.updateOne(
+                { _id: req.params.id},
+                {
+                    $set: {
+                        category: category,
+                        items: items,
+                        image: newUpload.secure_url,
+                        cloudinary_id: newUpload.public_id,
+                        description: description,
+                        pickupLocation: pickupLocation,
+                        deliveryLocation: deliveryLocation,
+                        pickupTime: pickupTime,
+                        deliveryTime: deliveryTime,
+                        itemPrice: itemPrice,
+                        errandFee: errandFee
+                    }
+                }
+            )
+
+        } else {
+
+            updatedErrand = await ErrandModel.updateOne(
+                { _id: req.params.id},
+                {
+                    $set: {
+                        category: category,
+                        items: items,
+                        description: description,
+                        pickupLocation: pickupLocation,
+                        deliveryLocation: deliveryLocation,
+                        pickupTime: pickupTime,
+                        deliveryTime: deliveryTime,
+                        itemPrice: itemPrice,
+                        errandFee: errandFee
+                    }
+                }
+            )
+        }
+
+        //Send email to buddy informing of changes
+        if (order_accepted) {
+
+            let buddy = await UserModel.findById(updatedErrand.fulfilled_by)
+            let emailBody = `${updatedErrand.username} made some changes to your errand order number ${updatedErrand._id}. Please take note of the updated changes and inform the seller if you are unable to fulfill the order.`
+            await sendEmail(buddy.email, 'Changes Made to Your Job Order', emailBody)
+
+        }
+        
+        res.json(
+            { 
+                success: true,
+                updatedErrand, 
+                "msg" : "success" 
+            }
+        )
+
+
+    },
+
     delete: async(req, res) => {
 
         let deleteErrand = await ErrandModel.findById(req.params.id)
@@ -215,13 +337,33 @@ const controller = {
             return
         }
 
+        let buddy = await UserModel.findById(deleteErrand.fulfilled_by)
+        let user =  deleteErrand.username
+
+        //To send an email, if needed, to the buddy to inform him of changes
+        let order_accepted =  false
+        if (errand.status === "Accepted: In-Progress") {
+            order_accepted = true
+        }
+
         await ErrandModel.deleteOne( {_id: req.params.id})
 
         if(deleteErrand.cloudinary_id) {
-            await cloudinary.uploader.destroy(deleteErrand.cloudinary_id)
+            cloudinary.uploader.destroy(deleteErrand.cloudinary_id)
         }
 
-        res.json({ "msg" : "success" })
+        if (order_accepted) {
+           
+            let emailBody = `${user} deleted your errand order number ${deleteErrand._id}. Please take note. Do take a look at our site on other available errands.`
+            await sendEmail(buddy.email, 'Errand deleted', emailBody)
+        }
+
+        res.json(
+            { 
+                success: true, 
+                "msg" : "success" 
+            }
+        )
 
     }
 }
