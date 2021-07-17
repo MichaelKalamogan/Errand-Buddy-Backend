@@ -289,7 +289,6 @@ console.log(465666);
 
     },
 
-
     //Log out the user
 
 
