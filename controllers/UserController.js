@@ -274,7 +274,6 @@ const controller = {
 
     },
 
-
     //Log out the user
 
 
