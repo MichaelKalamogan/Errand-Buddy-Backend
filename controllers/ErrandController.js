@@ -5,6 +5,9 @@ const ErrandModel = require('../models/Errand')
 const WalletModel = require('../models/Wallet')
 const sendEmail = require('../middleware/email')
 const { Types } = require('mongoose')
+const { update } = require('../models/User')
+const { number } = require('joi')
+
 
 
 const controller = {
@@ -15,21 +18,46 @@ const controller = {
         //Send details of the errand and a summary of the credibility of the person who posted the ad
         let errandDetails =  await ErrandModel.findById(req.params.id)
         let userDetails = await UserModel.findById(errandDetails.user_id, 'username reviews')
-        let userAverage = await UserModel.aggregate([
-            { $match: { _id: Types.ObjectId(errandDetails.user_id)}},
-            { $unwind: { path: '$reviews' }},
-            { 
-              $group: {
-                _id: '$_id',
-                averageReview: { $avg: '$reviews.rating' },
-              },
-            },
-        ]);
+        let userAverage = "No Reviews yet"
+        
+        if(userDetails.reviews.length > 1) {
+            
+            let ratingObject = await UserModel.aggregate([
+                { $match: { _id: Types.ObjectId(errandDetails.user_id)}},
+                { $unwind: { path: '$reviews' }},
+                { 
+                  $group: {
+                    _id: '$_id',
+                    averageReview: { $avg: '$reviews.rating' },
+                  },
+                },
+            ]);
+
+            userAverage = Math.round((ratingObject[0].averageReview+ Number.EPSILON) * 100) / 100
+        }
+
+        // let newUserDetails = []
+
+        // userDetails.reviews.map(item => {
+        //     newUserDetails.push(item)
+        // })
+
+        // for (let i = 0; i < newUserDetails.length; i++) {
+        //     let a = newUserDetails[i].created.toString()
+        //     newUserDetails[i].date = a
+        // }
+
+        // newUserDetails.map(item => {
+        //     console.log(1)
+        //     console.log(item.created.toString())
+        //     item['date'] = item.created.toString()
+
+        // })
 
         res.json(
             {
                 errandDetails: errandDetails, 
-                userDetails: userDetails, 
+                allReviews: userDetails.reviews, 
                 averageRating: userAverage
             }
         )
@@ -190,7 +218,8 @@ const controller = {
             errand_id: errand.id,
             errand_summary: errand.items,
             user_name: buddy.username,
-            user_id: buddy.id      
+            user_id: buddy.id,
+            created: Date.now()
         }
 
         await UserModel.findByIdAndUpdate(errand.user_id, {    

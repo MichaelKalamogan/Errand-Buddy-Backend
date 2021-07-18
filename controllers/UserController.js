@@ -97,7 +97,8 @@ const controller = {
             { 
                 "msg": "success", 
                 token: token,
-                userId: user.id
+                userId: user.id,
+                username: user.username
             })
     },
 
