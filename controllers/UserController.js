@@ -277,9 +277,11 @@ const controller = {
 
         const user = await UserModel.find({_id: req.user.id}, 'username')
         
+        let newErrand
+
         if (newUpload) {
 
-            await ErrandModel.create ({
+            newErrand = await ErrandModel.create ({
 
                 user_id: req.user.id,
                 username: user[0].username,
@@ -299,7 +301,7 @@ const controller = {
 
         } else {
 
-            await ErrandModel.create ({
+            newErrand = await ErrandModel.create ({
 
                 user_id: req.user.id,
                 username: user[0].username,
@@ -319,6 +321,11 @@ const controller = {
         res.json(
             {
                 success: true,
+                errandInfo: {
+                    errandName: newErrand.items,
+                    errandPrice: newErrand.itemPrice,
+                    errandImage: newErrand.image,
+                },
                 'msg': 'Errand successfully created'
             }
         )
