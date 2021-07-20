@@ -7,6 +7,8 @@ const sendEmail = require('../middleware/email')
 const { Types } = require('mongoose')
 const { update } = require('../models/User')
 const { number } = require('joi')
+const cloudinary = require('../config/cloudinary-config')
+const {streamUpload} = require('../config/multer-config')
 
 
 
@@ -65,7 +67,7 @@ const controller = {
 
     accept: async (req,res) => {
 
-        let errand = ErrandModel.findById(req.params.id)
+        let errand = await ErrandModel.findById(req.params.id)
 
         //Ensuring that the person who posted the errand does not accept his own order
         if (req.user.id === errand.user_id) { // FE will check the user.id. and if the errand is the same person's, shoudl be a cancel button instead of accept.
@@ -90,7 +92,7 @@ const controller = {
     }, 
 
     complete: async(req,res) => {
-
+     
         let errand = await ErrandModel.findById(req.params.id)
         let buddy = await UserModel.findById(errand.fulfilled_by)
 
@@ -186,8 +188,10 @@ const controller = {
     review: async(req,res) => { 
 
         const { rating , review } = req.body
+        console.log(req.body,'toppp');
 
         let errand = await ErrandModel.findById(req.params.id)
+        console.log(req.params.id,'paramssss');
 
         if (req.user.id !== errand.fulfilled_by) {
             res.json({
@@ -261,6 +265,7 @@ const controller = {
             errandFee, 
 
         } = req.body
+        console.log(req.body,'body');
 
         let updateErrand = await ErrandModel.findById(req.params.id)
 
@@ -272,13 +277,15 @@ const controller = {
             return
         }
 
+        console.log(updateErrand, 'updte');
+
         //To send an email, if needed, to the buddy to inform him of changes
         let order_accepted =  false
-        if (errand.status === "Accepted: In-Progress") {
+        if (updateErrand.status === "Accepted: In-Progress") {
             order_accepted = true
         }
 
-        if(errand.status === "Completed") {
+        if(updateErrand.status === "Completed") {
             res.json({
                 "msg" : "Not allowed to amend completed orders"
             })
@@ -355,8 +362,12 @@ const controller = {
     },
 
     delete: async(req, res) => {
-
+        
+        console.log(req.params.id,'2222222');
         let deleteErrand = await ErrandModel.findById(req.params.id)
+
+        console.log(deleteErrand);
+        console.log(req.user.id,'userID');
 
         if (deleteErrand.user_id !== req.user.id) {
             res.status(403).json({
@@ -371,7 +382,7 @@ const controller = {
 
         //To send an email, if needed, to the buddy to inform him of changes
         let order_accepted =  false
-        if (errand.status === "Accepted: In-Progress") {
+        if (deleteErrand.status === "Accepted: In-Progress") {
             order_accepted = true
         }
 

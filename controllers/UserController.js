@@ -99,6 +99,10 @@ const controller = {
                 token: token,
                 userId: user.id,
                 username: user.username
+                // 'msg': 'success', 
+                // 'token': token,
+                // 'userId': user.id,
+                // 'username': user.username,
             })
     },
 
@@ -217,32 +221,42 @@ const controller = {
 
     //User's dashbaord page
     dashboard: async (req, res) => {
+        
 
         //Getting the user details and errands created
         let user = await UserModel.findById(req.user.id).select("-password")
         let user_errands = await ErrandModel.find({ creator: req.user.id })
         // added
         let balance = await WalletModel.findById(user.wallet);
-        let inProgress = await ErrandModel.find({
+        
+        let jobFulfill = await ErrandModel.find({
             fulfilled_by: req.user.id, 
             status: "Accepted: In-Progress"
         })
+        
+        let jobCreated = await ErrandModel.find({
+            user_id: req.user.id, 
+        })
+        
         let completed = await ErrandModel.find({
             fulfilled_by: req.user.id, 
             status: "Completed"
         })
+       
 
         res.json({
-            user: user, 
+            user: user,
             errands: user_errands,
             balance,
-            inProgress,
+            jobFulfill,
+            jobCreated,
             completed
         })
     },
 
     //Create an Errand
     create: async (req, res) => {
+    
         const { 
             category, 
             items, 
@@ -255,8 +269,11 @@ const controller = {
             errandFee, 
 
         } = req.body
+     
 
         let newUpload = await streamUpload(req)
+       
+       
 
         const user = await UserModel.find({_id: req.user.id}, 'username')
         
