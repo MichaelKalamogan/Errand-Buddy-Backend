@@ -24,6 +24,7 @@ const ErrandSchema = new mongoose.Schema (
         deliveryTime: { type: Date, required: true},
         itemPrice: { type: String, required: true },
         errandFee: { type: String, required: true },
+        paid: { type: Boolean, default: false },
         status: { type: String, default: "available" },
         fulfilled_by: { type: String }
     }, 
