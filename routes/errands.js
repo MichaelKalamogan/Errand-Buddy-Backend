@@ -31,10 +31,10 @@ router.post('/:id/completed', authenticated, errandController.complete)
 router.get('/:id/update', authenticated, errandController.edit)
 
 //Update the errand
-router.post('/:id/update', authenticated, upload.single("image"), errandController.update)
+router.put('/:id/update', authenticated, upload.single("image"), errandController.update)
 
 //Deleting the errand
-router.post('/:id/delete', authenticated, errandController.delete)
+router.delete('/:id/delete', authenticated, errandController.delete)
 
 //Reviews for the errand
 router.post('/:id/completed/review', authenticated, errandController.review)
