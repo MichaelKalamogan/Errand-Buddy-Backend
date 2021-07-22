@@ -9,6 +9,7 @@ const { update } = require('../models/User')
 const { number } = require('joi')
 const cloudinary = require('../config/cloudinary-config')
 const {streamUpload} = require('../config/multer-config')
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 
 
@@ -409,13 +410,9 @@ const controller = {
 
         const { sessionId } = req.body
 
-        console.log(req.body)
+        const session = await stripe.checkout.sessions.retrieve ( sessionId )  
 
-        const session = await stripe.checkout.sessions.retrieve ( sessionId )
-
-        console.log(session)
-
-        if(stripe.payment_status === "paid") {
+        if(session.payment_status === "paid") {
 
             await ErrandModel.findOneAndUpdate({sessionId: sessionId } ,         
                 { 

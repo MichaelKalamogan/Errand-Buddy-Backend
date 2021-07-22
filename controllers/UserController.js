@@ -299,6 +299,19 @@ const controller = {
     
             })
 
+            res.json(
+                {
+                    success: true,
+                    errandInfo: {
+                        errandId: newErrand.id,
+                        errandName: newErrand.items,
+                        errandPrice: newErrand.itemPrice,
+                        errandImage: newErrand.image,
+                    },
+                    'msg': 'Errand successfully created'
+                }
+            )
+
         } else {
 
             newErrand = await ErrandModel.create ({
@@ -317,20 +330,22 @@ const controller = {
                 sessionId: " ",
     
             })
+
+            res.json(
+                {
+                    success: true,
+                    errandInfo: {
+                        errandId: newErrand.id,
+                        errandName: newErrand.items,
+                        errandPrice: newErrand.itemPrice,
+                    },
+                    'msg': 'Errand successfully created'
+                }
+            )
         }
 
-        res.json(
-            {
-                success: true,
-                errandInfo: {
-                    errandId: newErrand.id,
-                    errandName: newErrand.items,
-                    errandPrice: newErrand.itemPrice,
-                    errandImage: newErrand.image,
-                },
-                'msg': 'Errand successfully created'
-            }
-        )
+
+        
 
     }
 }
