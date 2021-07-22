@@ -220,6 +220,7 @@ const controller = {
             review: review,
             errand_id: errand.id,
             errand_summary: errand.items,
+            errand_image: errand.image,
             user_name: buddy.username,
             user_id: buddy.id,
             created: Date.now()
@@ -365,9 +366,6 @@ const controller = {
         console.log(req.params.id,'2222222');
         let deleteErrand = await ErrandModel.findById(req.params.id)
 
-        console.log(deleteErrand);
-        console.log(req.user.id,'userID');
-
         if (deleteErrand.user_id !== req.user.id) {
             res.status(403).json({
                 "msg":"Not authorised to delete"
@@ -409,11 +407,12 @@ const controller = {
     successfulPayment: async (req, res) => {
 
         const { sessionId } = req.body
+        console.log(sessionId)
 
         const session = await stripe.checkout.sessions.retrieve ( sessionId )  
 
         if(session.payment_status === "paid") {
-
+             console.log('2')
             await ErrandModel.findOneAndUpdate({sessionId: sessionId } ,         
                 { 
                     $set: { 
@@ -426,6 +425,37 @@ const controller = {
         res.json({success:true})
 
 
+    },
+
+    buddyCancel: async (req, res) => {
+        
+        const { errandId } =  req.params
+        
+        let errand = await ErrandModel.findById(errandId)
+
+        if (errand.fulfilled_by !== req.user.id) {
+            res.json({
+                success: false,
+                "msg": "Unauthorised"
+            })
+
+            return
+        }
+
+        await ErrandModel.findOneAndUpdate({id: errandId } ,         
+            { 
+                $set: { 
+                    fulfilled_by: "",
+                    status: "available"
+                }
+            }, 
+        )
+        
+        let user = await UserModel.findById(errand.user_id)
+        let emailBody = `Your buddy cancelled the acceptance of your order "${errandId.items}". Please take note of the updated changes.`
+        await sendEmail(user.email, 'Buddy cancelled your order', emailBody)
+
+        res.json({success:true})
     }
 }
 

@@ -11,6 +11,8 @@ const multer =  require('multer')
 const streamifier = require('streamifier')
 const { streamUpload } = require('../config/multer-config')
 const nodemailer = require('nodemailer');
+const sendEmail = require('../middleware/email')
+const { Types } = require('mongoose')
 
 
 const controller = {
@@ -225,23 +227,53 @@ const controller = {
 
         //Getting the user details and errands created
         let user = await UserModel.findById(req.user.id).select("-password")
-        let user_errands = await ErrandModel.find({ creator: req.user.id })
+        console.log(user)
+        let user_errands = await ErrandModel.find({ user_id: req.user.id })
         // added
         let balance = await WalletModel.findById(user.wallet);
         
         let jobFulfill = await ErrandModel.find({
-            fulfilled_by: req.user.id, 
-            status: "Accepted: In-Progress"
+            user_id: req.user.id,
+            status: "Accepted: In-Progress"            
         })
         
         let jobCreated = await ErrandModel.find({
-            user_id: req.user.id, 
+            user_id: req.user.id,
+            status: "available"
         })
         
         let completed = await ErrandModel.find({
             fulfilled_by: req.user.id, 
             status: "Completed"
         })
+
+        let buddyAccepted = await ErrandModel.find({
+            fulfilled_by: req.user.id, 
+            status: "Accepted: In-Progress"
+        })
+
+        let buddyErrands = await ErrandModel.find({
+            fulfilled_by: req.user.id, 
+
+        })  
+
+        let userAverage = 0
+
+        if(user.reviews.length > 1) {
+            
+            let ratingObject = await UserModel.aggregate([
+                { $match: { _id: Types.ObjectId(req.user.id)}},
+                { $unwind: { path: '$reviews' }},
+                { 
+                  $group: {
+                    _id: '$_id',
+                    averageReview: { $avg: '$reviews.rating' },
+                  },
+                },
+            ]);
+
+            userAverage = Math.round((ratingObject[0].averageReview + Number.EPSILON) * 100) / 100
+        }
        
 
         res.json({
@@ -250,7 +282,10 @@ const controller = {
             balance,
             jobFulfill,
             jobCreated,
-            completed
+            completed,
+            buddyAccepted,
+            buddyErrands,
+            averageRating: userAverage
         })
     },
 
