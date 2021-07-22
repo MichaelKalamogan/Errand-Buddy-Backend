@@ -103,8 +103,6 @@ const controller = {
             return
         }
 
-
-
         //Change status to completed
         errand = await ErrandModel.findByIdAndUpdate(req.params.id, 
             { 
@@ -404,6 +402,28 @@ const controller = {
                 "msg" : "success" 
             }
         )
+
+    },
+
+    successfulPayment: async (req, res) => {
+
+        const { sessionId } = req.body
+
+        const session = await stripe.checkout.sessions.retrieve ( sessionId )
+
+        if(payment_status === "paid") {
+
+            await ErrandModel.findOneAndUpdate({sessionId: sessionId } ,         
+                { 
+                    $set: { 
+                        paid: true
+                    }
+                }, 
+            )
+        }
+
+        res.json({success:true})
+
 
     }
 }

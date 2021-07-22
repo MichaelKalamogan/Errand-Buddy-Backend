@@ -26,6 +26,7 @@ const ErrandSchema = new mongoose.Schema (
         errandFee: { type: String, required: true },
         paid: { type: Boolean, default: false },
         status: { type: String, default: "available" },
+        sessionId: { type: String },
         fulfilled_by: { type: String }
     }, 
 

@@ -314,6 +314,7 @@ const controller = {
                 deliveryTime: deliveryTime,
                 itemPrice: itemPrice,
                 errandFee: errandFee,
+                sessionId: " ",
     
             })
         }
@@ -322,6 +323,7 @@ const controller = {
             {
                 success: true,
                 errandInfo: {
+                    errandId: newErrand.id,
                     errandName: newErrand.items,
                     errandPrice: newErrand.itemPrice,
                     errandImage: newErrand.image,

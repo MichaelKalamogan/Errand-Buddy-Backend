@@ -39,4 +39,7 @@ router.delete('/:id/delete', authenticated, errandController.delete)
 //Reviews for the errand
 router.post('/:id/completed/review', authenticated, errandController.review)
 
+//Update payment
+router.patch('/successfulpayment', authenticated, errandController.successfulPayment)
+
 module.exports = router
