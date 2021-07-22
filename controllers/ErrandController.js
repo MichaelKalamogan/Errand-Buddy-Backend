@@ -409,9 +409,13 @@ const controller = {
 
         const { sessionId } = req.body
 
+        console.log(req.body)
+
         const session = await stripe.checkout.sessions.retrieve ( sessionId )
 
-        if(payment_status === "paid") {
+        console.log(session)
+
+        if(stripe.payment_status === "paid") {
 
             await ErrandModel.findOneAndUpdate({sessionId: sessionId } ,         
                 { 
