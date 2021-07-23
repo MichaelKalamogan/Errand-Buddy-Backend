@@ -125,16 +125,16 @@ const controller = {
         }
 
         //creating a jwt to create and verify the reset password link
-        let resetToken = process.env.JWT_SECRET + resetUser.password
+        let resetToken = process.env.JWT_SECRET + user.password
 
         const payload = {
             email: email
         }
 
-        const token = jwt.sign (payload, resetToken, {expiresIn: 60})
+        const token = jwt.sign (payload, resetToken, {expiresIn: 600000})
 
         //The reset password link that will be sent to the user's email
-        const link = `http://Errand-Buddy-BE.herokuapp.com/api/users/reset-password/${user._id}/${token}`
+        const link = `http://${process.env.SERVER_URL}/api/users/reset-password/${user._id}/${token}`
 
         let transport = nodemailer.createTransport({
             host: 'smtp.gmail.com',
@@ -157,7 +157,7 @@ const controller = {
                 console.log(err)
             } else {
            
-                res.json({"msg" : "Reset password link has been sent to your email"})
+                res.json({success: true, "msg" : "Reset password link has been sent to your email"})
             }
         })
 
@@ -165,6 +165,7 @@ const controller = {
 
     //Reset page if reset link is valid
     resetPassword: async (req,res) => {
+        console.log('working')
 
         const {id, token} = req.params
 
@@ -175,8 +176,11 @@ const controller = {
 
         try {
             const decoded = jwt.verify(token, resetToken)
+
+            if (decoded) {
+                res.json({ success: true})
+            }
             
-            res.json({"msg" : "valid link"})
 
         } catch(error) {
            console.log(error.message)
