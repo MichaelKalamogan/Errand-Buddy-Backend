@@ -315,6 +315,23 @@ const controller = {
         const user = await UserModel.find({_id: req.user.id}, 'username')
         
         let newErrand
+        let pickupLat 
+        let pickUpLong 
+        let deliveryLat 
+        let deliveryLong 
+
+        let pickupGoogle = await geocode(pickupLocation)
+
+        if(pickupGoogle) {
+            pickupLat = pickupGoogle.lat
+            pickupLong = pickupGoogle.lng
+        }
+
+        let deliveryGoogle = await geocode(deliveryLocation)
+        if (deliveryGoogle) {
+            deliveryLat = deliveryGoogle.lat
+            deliveryLong = deliveryGoogle.lng
+        }
 
         if (newUpload) {
 
@@ -335,6 +352,20 @@ const controller = {
                 errandFee: errandFee,
     
             })
+
+            if (pickupGoogle && deliveryGoogle) { 
+                await ErrandModel.findByIdAndUpdate(newErrand._id, 
+                    {
+                        $set : {
+                            pickupLatitude: pickupLat,
+                            pickupLongtitude: pickupLong,
+                            deliveryLatitude: deliveryLat,
+                            deliveryLongtitude: deliveryLong,
+                        },
+
+                    }
+                )
+            }
 
             res.json(
                 {
@@ -367,6 +398,20 @@ const controller = {
                 sessionId: " ",
     
             })
+
+            if (pickupGoogle && deliveryGoogle) { 
+                await ErrandModel.findByIdAndUpdate (newErrand._id, 
+                    {
+                        $set : {
+                            pickupLatitude: pickupLat,
+                            pickupLongtitude: pickupLong,
+                            deliveryLatitude: deliveryLat,
+                            deliveryLongtitude: deliveryLong,
+                        },
+
+                    }
+                )
+            }
 
             res.json(
                 {

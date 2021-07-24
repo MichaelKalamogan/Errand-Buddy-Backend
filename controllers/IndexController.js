@@ -17,8 +17,7 @@ const controller = {
         let errandsAvailable = await ErrandModel
             .find({ status: "available" })
             .sort({ pickupTime: 1 }) 
-        // let locationInfo = geocode()
-        // console.log(locationInfo)
+
         res.json({errands: errandsAvailable})
 
         

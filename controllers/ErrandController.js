@@ -35,7 +35,7 @@ const controller = {
             ]);
 
             userAverage = Math.round((ratingObject[0].averageReview+ Number.EPSILON) * 100) / 100
-        }
+        }   
 
         // let newUserDetails = []
 
