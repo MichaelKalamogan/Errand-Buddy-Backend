@@ -31,11 +31,6 @@ router.post('/create-errand', authenticated, upload.single("image"), userControl
 router.patch('/reset-password/submit', userController.submitResetPassword)
 
 // Reset password page
-router.get('/reset-password/:id/:token', userController.resetPassword)
-
-
-
-//Log out the user
-
+router.post('/reset-password/:id/:token', userController.resetPassword)
 
 module.exports = router

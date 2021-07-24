@@ -11,8 +11,6 @@ const cloudinary = require('../config/cloudinary-config')
 const {streamUpload} = require('../config/multer-config')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
-
-
 const controller = {
 
     //Show full details of the errand
@@ -187,10 +185,8 @@ const controller = {
     review: async(req,res) => { 
 
         const { rating , review } = req.body
-        console.log(req.body,'toppp');
 
         let errand = await ErrandModel.findById(req.params.id)
-        console.log(req.params.id,'paramssss');
 
         if (req.user.id !== errand.fulfilled_by) {
             res.json({
@@ -265,7 +261,6 @@ const controller = {
             errandFee, 
 
         } = req.body
-        console.log(req.body,'body');
 
         let updateErrand = await ErrandModel.findById(req.params.id)
 
@@ -276,8 +271,6 @@ const controller = {
 
             return
         }
-
-        console.log(updateErrand, 'updte');
 
         //To send an email, if needed, to the buddy to inform him of changes
         let order_accepted =  false
@@ -363,7 +356,6 @@ const controller = {
 
     delete: async(req, res) => {
         
-        console.log(req.params.id,'2222222');
         let deleteErrand = await ErrandModel.findById(req.params.id)
 
         if (deleteErrand.user_id !== req.user.id) {
@@ -407,12 +399,11 @@ const controller = {
     successfulPayment: async (req, res) => {
 
         const { sessionId } = req.body
-        console.log(sessionId)
 
         const session = await stripe.checkout.sessions.retrieve ( sessionId )  
 
         if(session.payment_status === "paid") {
-             console.log('2')
+
             await ErrandModel.findOneAndUpdate({sessionId: sessionId } ,         
                 { 
                     $set: { 

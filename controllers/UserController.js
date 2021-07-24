@@ -13,6 +13,7 @@ const { streamUpload } = require('../config/multer-config')
 const nodemailer = require('nodemailer');
 const sendEmail = require('../middleware/email')
 const { Types } = require('mongoose')
+const geocode = require ('../utils/Geocode')
 
 
 const controller = {
@@ -134,7 +135,7 @@ const controller = {
         const token = jwt.sign (payload, resetToken, {expiresIn: 600000})
 
         //The reset password link that will be sent to the user's email
-        const link = `http://${process.env.SERVER_URL}/api/users/reset-password/${user._id}/${token}`
+        const link = `http://${process.env.FRONTEND_DOMAIN}/reset-password/${user._id}/${token}`
 
         let transport = nodemailer.createTransport({
             host: 'smtp.gmail.com',
@@ -165,7 +166,6 @@ const controller = {
 
     //Reset page if reset link is valid
     resetPassword: async (req,res) => {
-        console.log('working')
 
         const {id, token} = req.params
 
@@ -189,17 +189,18 @@ const controller = {
 
     },
 
+
     submitResetPassword: async(req,res) => {
         
         
-        const {id, password, password2} = req.body
+        const {id, password} = req.body
 
         //ensuring the user knows the password being keyed in
-        if (password !== password2) {
+        // if (password !== password2) {
 
-            res.json({"msg":"passwords don't match"})
-            return
-        }
+        //     res.json({"msg":"passwords don't match"})
+        //     return
+        // }
 
         //Hash the password using bcrypt and saltrounds of 10
         const hash = bcrypt.hashSync(password, 10);
@@ -221,7 +222,7 @@ const controller = {
 
         } else {
 
-            res.json ({"msg": 'password updated'})
+            res.json ({ success: true, "msg": 'Password updated'})
         }
     },  
 
@@ -231,7 +232,7 @@ const controller = {
 
         //Getting the user details and errands created
         let user = await UserModel.findById(req.user.id).select("-password")
-        console.log(user)
+
         let user_errands = await ErrandModel.find({ user_id: req.user.id })
         // added
         let balance = await WalletModel.findById(user.wallet);
@@ -309,10 +310,7 @@ const controller = {
 
         } = req.body
      
-
-        let newUpload = await streamUpload(req)
-       
-       
+        let newUpload = await streamUpload(req)     
 
         const user = await UserModel.find({_id: req.user.id}, 'username')
         
@@ -381,11 +379,7 @@ const controller = {
                     'msg': 'Errand successfully created'
                 }
             )
-        }
-
-
-        
-
+        }   
     }
 }
 
