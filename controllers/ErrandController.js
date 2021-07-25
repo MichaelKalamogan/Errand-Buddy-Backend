@@ -262,7 +262,10 @@ const controller = {
 
         } = req.body
 
+        let totalPrice = itemPrice + errandFee
+
         let updateErrand = await ErrandModel.findById(req.params.id)
+        console.log(updateErrand)
 
         if (updateErrand.user_id !== req.user.id) {
             res.status(403).json({
@@ -271,13 +274,14 @@ const controller = {
 
             return
         }
-
+        console.log('1')
         //To send an email, if needed, to the buddy to inform him of changes
         let order_accepted =  false
         if (updateErrand.status === "Accepted: In-Progress") {
             order_accepted = true
         }
-
+        
+        console.log('2')
         if(updateErrand.status === "Completed") {
             res.json({
                 "msg" : "Not allowed to amend completed orders"
@@ -315,7 +319,7 @@ const controller = {
             )
 
         } else {
-
+            console.log('3')
             updatedErrand = await ErrandModel.updateOne(
                 { _id: req.params.id},
                 {
@@ -332,8 +336,10 @@ const controller = {
                     }
                 }
             )
-        }
 
+            console.log(updatedErrand)
+        }
+        console.log('4')
         //Send email to buddy informing of changes
         if (order_accepted) {
 

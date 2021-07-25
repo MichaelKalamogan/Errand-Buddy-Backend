@@ -34,7 +34,7 @@ router.get('/:id/update', authenticated, errandController.edit)
 router.patch('/:id/buddycancel', authenticated, errandController.buddyCancel)
 
 //Update the errand
-router.put('/:id/update', authenticated, upload.single("image"), errandController.update)
+router.patch('/:id/update', authenticated, upload.single("image"), errandController.update)
 
 //Deleting the errand
 router.delete('/:id/delete', authenticated, errandController.delete)

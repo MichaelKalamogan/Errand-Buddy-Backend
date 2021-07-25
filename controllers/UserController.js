@@ -309,6 +309,8 @@ const controller = {
             errandFee, 
 
         } = req.body
+
+        const totalPrice = itemPrice + errandFee
      
         let newUpload = await streamUpload(req)     
 
@@ -350,6 +352,8 @@ const controller = {
                 deliveryTime: deliveryTime,
                 itemPrice: itemPrice,
                 errandFee: errandFee,
+                totalPrice: totalPrice,
+                sessionId: " ",
     
             })
 
@@ -373,7 +377,7 @@ const controller = {
                     errandInfo: {
                         errandId: newErrand.id,
                         errandName: newErrand.items,
-                        errandPrice: newErrand.itemPrice,
+                        errandPrice: newErrand.totalPrice,
                         errandImage: newErrand.image,
                     },
                     'msg': 'Errand successfully created'
@@ -419,7 +423,7 @@ const controller = {
                     errandInfo: {
                         errandId: newErrand.id,
                         errandName: newErrand.items,
-                        errandPrice: newErrand.itemPrice,
+                        errandPrice: newErrand.totalPrice,
                     },
                     'msg': 'Errand successfully created'
                 }
