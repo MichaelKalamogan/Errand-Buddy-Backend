@@ -12,6 +12,7 @@ const streamifier = require('streamifier')
 const { streamUpload } = require('../config/multer-config')
 const nodemailer = require('nodemailer');
 const sendEmail = require('../middleware/email')
+const LikeModel =  require('../models/Like')
 const { Types } = require('mongoose')
 const geocode = require ('../utils/Geocode')
 
@@ -438,6 +439,15 @@ const controller = {
                 }
             )
         }   
+    },
+
+    retrieveLikes:  async (req, res) => {
+
+        const {id} = req.params
+    
+        const likedErrands = await LikeModel.find({ userId : id} ).populate('errandId')
+        
+        res.json(likedErrands)
     }
 }
 

@@ -37,24 +37,6 @@ const controller = {
             userAverage = Math.round((ratingObject[0].averageReview+ Number.EPSILON) * 100) / 100
         }   
 
-        // let newUserDetails = []
-
-        // userDetails.reviews.map(item => {
-        //     newUserDetails.push(item)
-        // })
-
-        // for (let i = 0; i < newUserDetails.length; i++) {
-        //     let a = newUserDetails[i].created.toString()
-        //     newUserDetails[i].date = a
-        // }
-
-        // newUserDetails.map(item => {
-        //     console.log(1)
-        //     console.log(item.created.toString())
-        //     item['date'] = item.created.toString()
-
-        // })
-
         res.json(
             {
                 errandDetails: errandDetails, 
@@ -262,7 +244,7 @@ const controller = {
 
         } = req.body
 
-        let newTotalPrice = itemPrice + errandFee
+        let newTotalPrice = Number(itemPrice)+ Number(errandFee)
 
         let initialErrand = await ErrandModel.findById(req.params.id)
  
@@ -295,13 +277,14 @@ const controller = {
         if(newUpload) {
 
             if(initialErrand.cloudinary_id) {
-                cloudinary.uploader.destroy(updateErrand.cloudinary_id)
+                cloudinary.uploader.destroy(initialErrand.cloudinary_id)
             }
 
-            await ErrandModel.updateOne(
+            updatedErrand = await ErrandModel.findOneAndUpdate(
                 { _id: req.params.id},
                 {
                     $set: {
+                        paid: false,
                         category: category,
                         items: items,
                         image: newUpload.secure_url,
@@ -312,17 +295,21 @@ const controller = {
                         pickupTime: pickupTime,
                         deliveryTime: deliveryTime,
                         itemPrice: itemPrice,
-                        errandFee: errandFee
+                        errandFee: errandFee, 
+                        totalPrice: newTotalPrice
                     }
-                }
+                },
+
+                { new : true }
             )
 
         } else {
 
-            updatedErrand = await ErrandModel.updateOne(
+            updatedErrand = await ErrandModel.findOneAndUpdate(
                 { _id: req.params.id},
                 {
                     $set: {
+                        paid: false,
                         category: category,
                         items: items,
                         description: description,
@@ -331,22 +318,24 @@ const controller = {
                         pickupTime: pickupTime,
                         deliveryTime: deliveryTime,
                         itemPrice: itemPrice,
-                        errandFee: errandFee
+                        errandFee: errandFee,
+                        totalPrice: newTotalPrice
                     }
-                }
+                }, 
+
+                { new : true }
             )
 
 
-        }
+        }   
 
-        
-
+        console.log(updatedErrand)
         //Send email to buddy informing of changes
         if (order_accepted) {
 
             let buddy = await UserModel.findById(updatedErrand.fulfilled_by)
             let emailBody = `${updatedErrand.username} made some changes to your errand order number ${updatedErrand._id}. Please take note of the updated changes and inform the seller if you are unable to fulfill the order.`
-            await sendEmail(buddy.email, 'Changes Made to Your Job Order', emailBody)
+            sendEmail(buddy.email, 'Changes Made to Your Job Order', emailBody)
 
         }
 
@@ -428,6 +417,7 @@ const controller = {
         const { sessionId } = req.body
 
         const session = await stripe.checkout.sessions.retrieve ( sessionId )  
+        const amountPaid = session.amount_total/100 // Because stripe amounts are in cents
 
         if(session.payment_status === "paid") {
 
@@ -443,13 +433,13 @@ const controller = {
             let poster_wallet = await WalletModel.findById(poster.wallet)
 
             let walletPrevBal = Number(poster_wallet.balance)
-            let walletNewBal = walletPrevBal + (session.amount_total/100)
+            let walletNewBal = walletPrevBal + amountPaid
 
             let newTransaction = {
 
                 prev_bal: walletPrevBal,
                 new_bal: walletNewBal,
-                amount_credited: session.amount_total,
+                amount_credited: amountPaid,
                 type: "Payment for Errand",
                 from: poster.username,
                 date: Date.now()

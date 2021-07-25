@@ -27,10 +27,15 @@ router.post('/forgot-password', userController.forgotPassword)
 //Create an Errand
 router.post('/create-errand', authenticated, upload.single("image"), userController.create)
 
-//submit new password
+//Submit new password
 router.patch('/reset-password/submit', userController.submitResetPassword)
+
+//Retrieve errands liked
+router.get('/:id/retrieveLikes', userController.retrieveLikes)
 
 // Reset password page
 router.post('/reset-password/:id/:token', userController.resetPassword)
+
+
 
 module.exports = router
