@@ -310,15 +310,18 @@ const controller = {
 
         } = req.body
 
-        const totalPrice = itemPrice + errandFee
+        const totalPrice = Number(itemPrice) + Number(errandFee)
+
+        console.log(1)
      
         let newUpload = await streamUpload(req)     
 
         const user = await UserModel.find({_id: req.user.id}, 'username')
         
+        console.log('2')
         let newErrand
         let pickupLat 
-        let pickUpLong 
+        let pickupLong 
         let deliveryLat 
         let deliveryLong 
 
@@ -329,13 +332,19 @@ const controller = {
             pickupLong = pickupGoogle.lng
         }
 
+        console.log(pickupGoogle)
+
         let deliveryGoogle = await geocode(deliveryLocation)
         if (deliveryGoogle) {
             deliveryLat = deliveryGoogle.lat
             deliveryLong = deliveryGoogle.lng
         }
 
+        console.log(deliveryGoogle)
+
         if (newUpload) {
+
+            console.log('final')
 
             newErrand = await ErrandModel.create ({
 
@@ -357,7 +366,7 @@ const controller = {
     
             })
 
-            if (pickupGoogle && deliveryGoogle) { 
+            if (pickupGoogle || deliveryGoogle) { 
                 await ErrandModel.findByIdAndUpdate(newErrand._id, 
                     {
                         $set : {

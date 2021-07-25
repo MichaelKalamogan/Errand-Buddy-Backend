@@ -262,11 +262,11 @@ const controller = {
 
         } = req.body
 
-        let totalPrice = itemPrice + errandFee
+        let newTotalPrice = itemPrice + errandFee
 
-        let updateErrand = await ErrandModel.findById(req.params.id)
+        let initialErrand = await ErrandModel.findById(req.params.id)
  
-        if (updateErrand.user_id !== req.user.id) {
+        if (initialErrand.user_id !== req.user.id) {
             res.status(403).json({
                 "msg":"Not authorised to delete"
             })
@@ -276,12 +276,12 @@ const controller = {
 
         //To send an email, if needed, to the buddy to inform him of changes
         let order_accepted =  false
-        if (updateErrand.status === "Accepted: In-Progress") {
+        if (initialErrand.status === "Accepted: In-Progress") {
             order_accepted = true
         }
         
 
-        if(updateErrand.status === "Completed") {
+        if(initialErrand.status === "Completed") {
             res.json({
                 "msg" : "Not allowed to amend completed orders"
             })
@@ -294,7 +294,7 @@ const controller = {
 
         if(newUpload) {
 
-            if(updateErrand.cloudinary_id) {
+            if(initialErrand.cloudinary_id) {
                 cloudinary.uploader.destroy(updateErrand.cloudinary_id)
             }
 
@@ -339,6 +339,8 @@ const controller = {
 
         }
 
+        
+
         //Send email to buddy informing of changes
         if (order_accepted) {
 
@@ -347,14 +349,34 @@ const controller = {
             await sendEmail(buddy.email, 'Changes Made to Your Job Order', emailBody)
 
         }
+
+        if (newTotalPrice > initialErrand.totalPrice) {
+
+            let errandDifference = newTotalPrice - initialErrand.totalPrice
+            res.json(
+                {
+                    priceChange: true,
+                    errandInfo: {
+                        errandId: updatedErrand.id,
+                        errandName: updatedErrand.items,
+                        errandPrice: errandDifference,
+                        errandImage: updatedErrand.image,
+                    },
+                    'msg': 'Errand successfully created'
+                }
+            )
+
+        } else { 
+            res.json(
+                { 
+                    success: true,
+                    updatedErrand, 
+                    "msg" : "success" 
+                }
+            )
+        }
         
-        res.json(
-            { 
-                success: true,
-                updatedErrand, 
-                "msg" : "success" 
-            }
-        )
+ 
 
 
     },
@@ -413,8 +435,33 @@ const controller = {
                 { 
                     $set: { 
                         paid: true
-                    }
+                    },
                 }, 
+            )
+
+            let poster = await UserModel.findOne({email: session.customer_email})
+            let poster_wallet = await WalletModel.findById(poster.wallet)
+
+            let walletPrevBal = Number(poster_wallet.balance)
+            let walletNewBal = walletPrevBal + (session.amount_total/100)
+
+            let newTransaction = {
+
+                prev_bal: walletPrevBal,
+                new_bal: walletNewBal,
+                amount_credited: session.amount_total,
+                type: "Payment for Errand",
+                from: poster.username,
+                date: Date.now()
+        }
+
+            await WalletModel.findByIdAndUpdate(poster.wallet, 
+                {
+                    $set: {
+                        balance: walletNewBal,
+                    },
+                    $push: { transaction : newTransaction }
+                }
             )
         }
 

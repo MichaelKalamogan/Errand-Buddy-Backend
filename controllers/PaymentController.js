@@ -6,7 +6,6 @@ const UserModel = require('../models/User')
 const ErrandModel =  require('../models/Errand')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
-
 const controller = {
 
     checkout: async (req, res) => {
