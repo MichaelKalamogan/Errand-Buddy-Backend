@@ -16,6 +16,7 @@ const indexController = require('./controllers/IndexController')
 const userRouter = require('./routes/users')
 const errandRouter =  require('./routes/errands')
 const paymentRouter =  require('./routes/payment')
+const chatRouter = require('./routes/chat')
 
 const mongoURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_URL}`
 mongoose.set('useFindAndModify', false)
@@ -50,7 +51,7 @@ app.use(cors({origin: '*'}))
 app.get(['/', '/errand-buddy'], indexController.home)
 app.use('/api/users', userRouter)
 app.use('/api/errands', errandRouter)
-// app.get('api/payment', paymentRouter)
+app.use('/api/chats', chatRouter)
 app.use('/api/payment', paymentRouter )
 
 
