@@ -14,7 +14,7 @@ const controller = {
 
         //Check if conversation already exists
         let conversation = await ConversationModel.findOne({
-            errand_Id: req.body.errand.id , members: {$in: [req.body.userId]} 
+            errand_Id: req.body.errandId, members: {$in: [req.body.username]} 
         })
         
         //If exists send the conversation Id to redirect
@@ -28,10 +28,10 @@ const controller = {
         }
 
         //Initiate new conversation
-        const newConversation = new ConversationModel.create({
-            members: [ req.body.userId, req.body.sellerId],
-            errand_Id: req.body.errand.id,
-            errand_desc: req.body.errand.name,
+        const newConversation = await ConversationModel.create({
+            members: req.body.members,
+            errand_Id: req.body.errandId,
+            errand_desc: req.body.errand_desc,
         })
 
         res.json({
@@ -42,23 +42,27 @@ const controller = {
     },
 
     getConversations: async (req, res) => {
+
         const conversations = await ConversationModel.find({
-            members: {$in: [req.body.userId]} 
+            members: {$in: [req.params.username]} 
         })
 
         res.status(200).json(conversations)
     },
 
     newMessage: async (req, res) => {
-
-        const newMessage = await MessageModel.create(req.body)
+        console.log(req.body)
+        const newMessage = await MessageModel.create(req.body.message)
 
         res.status(200).json(newMessage)
     },
 
     getMessages: async(req, res) => {
 
+        console.log('working)')
+        
         const { conversationId } = req.params
+        console.log(conversationId)
         const messages = await MessageModel.find({
             conversationId: conversationId
         })

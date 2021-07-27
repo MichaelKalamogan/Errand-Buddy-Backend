@@ -5,7 +5,7 @@ const { response } = require('express')
 
 //Getting the latitude and longtitude of the location through Google Maps
 const Geocode =  async (postal) =>  {
-    console.log(process.env.GEOCODE_API_KEY)
+
     let latLongInfo = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params: {
             address: postal,
