@@ -51,7 +51,7 @@ const controller = {
     },
 
     newMessage: async (req, res) => {
-        console.log(req.body)
+
         const newMessage = await MessageModel.create(req.body.message)
 
         res.status(200).json(newMessage)
@@ -59,10 +59,8 @@ const controller = {
 
     getMessages: async(req, res) => {
 
-        console.log('working)')
-        
         const { conversationId } = req.params
-        console.log(conversationId)
+
         const messages = await MessageModel.find({
             conversationId: conversationId
         })

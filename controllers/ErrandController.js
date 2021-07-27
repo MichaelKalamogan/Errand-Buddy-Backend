@@ -329,7 +329,6 @@ const controller = {
 
         }   
 
-        console.log(updatedErrand)
         //Send email to buddy informing of changes
         if (order_accepted) {
 
