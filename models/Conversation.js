@@ -4,7 +4,8 @@ const Schema = mongoose.Schema
 const ConversationSchema = new mongoose.Schema (
     
     {   
-        members: { type: Array }, // at Pos 0 is always the user and at Pos 1 is always the seller
+        buyer: { type: String },
+        seller: { type: String },
         errand_Id: { type: String },
         errand_desc: { type: String }
                 

@@ -8,7 +8,7 @@ router.post('/newmessage',chatController.newMessage)
 
 router.get('/:conversationId', chatController.getMessages)
 
-router.get('/conversations/:username', chatController.getConversations)
+router.get('/buyerconversations/:username', chatController.getBuyerConversations)
 
 
 

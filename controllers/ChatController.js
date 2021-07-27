@@ -14,8 +14,10 @@ const controller = {
 
         //Check if conversation already exists
         let conversation = await ConversationModel.findOne({
-            errand_Id: req.body.errandId, members: {$in: [req.body.username]} 
-        })
+            'errand_Id': req.body.errand_Id, 'buyer': req.body.buyer} 
+        )
+
+        console.log('1', conversation)
         
         //If exists send the conversation Id to redirect
         if (conversation) {
@@ -29,11 +31,12 @@ const controller = {
 
         //Initiate new conversation
         const newConversation = await ConversationModel.create({
-            members: req.body.members,
-            errand_Id: req.body.errandId,
+            buyer: req.body.buyer,
+            seller: req.body.seller,
+            errand_Id: req.body.errand_Id,
             errand_desc: req.body.errand_desc,
         })
-
+         console.log('2', newConversation)
         res.json({
             success: true,
             conversation:  newConversation
@@ -41,11 +44,11 @@ const controller = {
         
     },
 
-    getConversations: async (req, res) => {
+    getBuyerConversations: async (req, res) => {
 
         const conversations = await ConversationModel.find({
-            members: {$in: [req.params.username]} 
-        })
+            buyer: req.params.username} 
+        )
 
         res.status(200).json(conversations)
     },
