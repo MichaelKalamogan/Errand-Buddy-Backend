@@ -10,6 +10,6 @@ router.get('/:conversationId', chatController.getMessages)
 
 router.get('/buyerconversations/:username', chatController.getBuyerConversations)
 
-
+router.get('/sellerconversations/:username', chatController.getSellerConversations)
 
 module.exports = router
