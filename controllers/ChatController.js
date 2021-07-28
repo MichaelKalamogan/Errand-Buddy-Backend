@@ -52,6 +52,16 @@ const controller = {
 
         res.status(200).json(conversations)
     },
+    
+    getSellerConversations: async (req, res) => {
+
+        const conversations = await ConversationModel.find({
+            seller: req.params.username} 
+        )
+
+        res.status(200).json(conversations)
+
+    },
 
     newMessage: async (req, res) => {
 
