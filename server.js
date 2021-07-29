@@ -7,7 +7,7 @@ require('express-async-errors')
 const mongoose = require('mongoose')
 const app = express();
 const cors = require('cors')
-const PORT = process.env.port || 4000
+const PORT = process.env.PORT || 4000
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
