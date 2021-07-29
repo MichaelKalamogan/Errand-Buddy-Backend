@@ -16,8 +16,6 @@ const controller = {
         let conversation = await ConversationModel.findOne({
             'errand_Id': req.body.errand_Id, 'buyer': req.body.buyer} 
         )
-
-        console.log('1', conversation)
         
         //If exists send the conversation Id to redirect
         if (conversation) {
@@ -36,7 +34,7 @@ const controller = {
             errand_Id: req.body.errand_Id,
             errand_desc: req.body.errand_desc,
         })
-         console.log('2', newConversation)
+
         res.json({
             success: true,
             conversation:  newConversation
