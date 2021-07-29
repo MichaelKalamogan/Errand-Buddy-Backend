@@ -136,7 +136,7 @@ const controller = {
         const token = jwt.sign (payload, resetToken, {expiresIn: 600000})
 
         //The reset password link that will be sent to the user's email
-        const link = `http://${process.env.FRONTEND_DOMAIN}/reset-password/${user._id}/${token}`
+        const link = `${process.env.FRONTEND_DOMAIN}/reset-password/${user._id}/${token}`
 
         let transport = nodemailer.createTransport({
             host: 'smtp.gmail.com',

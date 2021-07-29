@@ -28,21 +28,6 @@ mongoose.set('useCreateIndex', true)
 app.use(express.json({ extended: false }))
 app.use(cors({origin: '*'}))
 
-// app.use('/api', createProxyMiddleware({ 
-//     target: 'http://localhost:3000/', //original url
-//     changeOrigin: true, 
-//     //secure: false,
-//     onProxyRes: function (proxyRes, req, res) {
-//        proxyRes.headers['Access-Control-Allow-Origin'] = '*';
-//     }
-// }));
-// app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-//   });
-
-
 // =======================================
 //              ROUTES
 // =======================================
