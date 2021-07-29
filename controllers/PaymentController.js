@@ -19,8 +19,8 @@ const controller = {
             line_items,
             customer_email : user.email,
             mode: 'payment',
-            success_url: `http://${process.env.FRONTEND_DOMAIN}/stripe/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `http://${process.env.FRONTEND_DOMAIN}/canceled`,
+            success_url: `${process.env.FRONTEND_DOMAIN}/stripe/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.FRONTEND_DOMAIN}/canceled`,
           });
         
         await ErrandModel.findByIdAndUpdate (errandId,
