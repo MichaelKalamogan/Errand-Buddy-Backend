@@ -19,8 +19,7 @@ const Geocode =  async (postal) =>  {
         
         x = latLongInfo.data.results[0].geometry.location
     }
-    
-    
+
     return x
 
   

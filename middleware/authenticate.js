@@ -5,10 +5,8 @@ module.exports = {
 
     //Check if user is authenticated/logged in to access personal information
     authenticated: (req, res, next) => {
-        console.log('1')
-
+        
         const token = req.header('x-auth-token')
-        console.log('2',token)
     
         if(!token) {
             return res.status(401).json({msg: 'Not Logged in'})

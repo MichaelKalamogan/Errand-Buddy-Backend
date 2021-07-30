@@ -468,7 +468,7 @@ const controller = {
         let errand = await ErrandModel.findById(errandId)
 
         if (errand.fulfilled_by !== req.user.id) {
-            console.log('here')
+
             res.json({
                 success: false,
                 "msg": "Unauthorised"
