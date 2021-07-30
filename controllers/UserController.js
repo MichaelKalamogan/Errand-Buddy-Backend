@@ -260,6 +260,7 @@ const controller = {
 
         let buddyErrands = await ErrandModel.find({
             fulfilled_by: req.user.id, 
+            status:"Completed"
 
         })  
 

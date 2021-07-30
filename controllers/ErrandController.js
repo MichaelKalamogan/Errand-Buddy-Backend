@@ -3,6 +3,7 @@ const express = require ('express')
 const UserModel = require ('../models/User')
 const ErrandModel = require('../models/Errand')
 const WalletModel = require('../models/Wallet')
+const LikeModel = require('../models/Like')
 const sendEmail = require('../middleware/email')
 const { Types } = require('mongoose')
 const { update } = require('../models/User')
@@ -391,6 +392,7 @@ const controller = {
         }
 
         await ErrandModel.deleteOne( {_id: req.params.id})
+        await LikeModel.deleteMany({ errandId: req.params.id})
 
         if(deleteErrand.cloudinary_id) {
             cloudinary.uploader.destroy(deleteErrand.cloudinary_id)
