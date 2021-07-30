@@ -38,36 +38,36 @@ An online marketplace for users to list services or errands to be fulfilled for 
 
 
 
-<img src=https://github.com/mdYaqin/Errand-Buddy-Frontend/blob/main/errand-buddy-fe/src/components/Readme/Wireframe1.jpeg width="500" height="400">
-<img src=https://github.com/mdYaqin/Errand-Buddy-Frontend/blob/main/errand-buddy-fe/src/components/Readme/Wireframe2.jpeg width="500" height="400">
-<img src=https://github.com/mdYaqin/Errand-Buddy-Frontend/blob/main/errand-buddy-fe/src/components/Readme/Wireframe3.jpeg width="500" height="400">
+<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Wireframe1.jpeg width="500" height="400">
+<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Wireframe2.jpeg width="500" height="400">
+<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Wireframe3.jpeg width="500" height="400">
 
 
 # Actual App
 
 ### Home Page
-<img src=https://github.com/mdYaqin/Errand-Buddy-Frontend/blob/main/errand-buddy-fe/src/components/Readme/Homepage.jpg width="600" height="400">
+<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Homepage.jpg width="600" height="400">
 
 ### Login Page
-<img src=https://github.com/mdYaqin/Errand-Buddy-Frontend/blob/main/errand-buddy-fe/src/components/Readme/Login.png width="600" height="400">
+<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Login.png width="600" height="400">
 
 ### Show Page
-<img src=https://github.com/mdYaqin/Errand-Buddy-Frontend/blob/main/errand-buddy-fe/src/components/Readme/Showcard%20w%20login.png width="600" height="400">
+<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Showcard%20w%20login.png width="600" height="400">
 
 ### Dashboard
-<img src=https://github.com/mdYaqin/Errand-Buddy-Frontend/blob/main/errand-buddy-fe/src/components/Readme/Buddy%20in%20progress.png width="600" height="400">
+<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Buddy%20in%20progress.png width="600" height="400">
 
 ### Create Errand
-<img src=https://github.com/mdYaqin/Errand-Buddy-Frontend/blob/main/errand-buddy-fe/src/components/Readme/Create%20errand.png width="600" height="400">
+<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Create%20errand.png width="600" height="400">
 
 ### Modify Errand
-<img src=https://github.com/mdYaqin/Errand-Buddy-Frontend/blob/main/errand-buddy-fe/src/components/Readme/Modify%20errand.png width="600" height="400">
+<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Modify%20errand.png width="600" height="400">
 
 ### Edit & Delete Errand
-<img src=https://github.com/mdYaqin/Errand-Buddy-Frontend/blob/main/errand-buddy-fe/src/components/Readme/Edit%20and%20delete.png width="600" height="400">
+<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Edit%20and%20delete.png width="600" height="400">
 
 ### Ratings & Review
-<img src=https://github.com/mdYaqin/Errand-Buddy-Frontend/blob/main/errand-buddy-fe/src/components/Readme/Ratings%20and%20review.png width="600" height="400">
+<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Ratings%20and%20review.png width="600" height="400">
 
 
 ## Restful Routes
@@ -107,4 +107,5 @@ An online marketplace for users to list services or errands to be fulfilled for 
 * Components in the dashboard page could further broken into several components
 * The styling could be improved more
 * Web app to be more interactive e.g. mobile, tablet etc
+
 
