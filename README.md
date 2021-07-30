@@ -5,8 +5,7 @@ An online marketplace for users to list services or errands to be fulfilled for 
 
 ## App Link
 
-
-
+https://thanks-buddy.herokuapp.com/
 
 ## Tech Stack / Libraries
 * ReactJs
@@ -106,6 +105,6 @@ An online marketplace for users to list services or errands to be fulfilled for 
 
 * Components in the dashboard page could further broken into several components
 * The styling could be improved more
-* Web app to be more interactive e.g. mobile, tablet etc
+* Web app to be more responsive e.g. mobile, tablet etc
 
 
