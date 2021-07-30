@@ -18,7 +18,9 @@ const controller = {
     show: async (req,res) => {
         
         //Send details of the errand and a summary of the credibility of the person who posted the ad
-        let errandDetails =  await ErrandModel.findById(req.params.id)
+        let errandDetails = await ErrandModel.findById(req.params.id)
+
+
         let userDetails = await UserModel.findById(errandDetails.user_id, 'username reviews')
         let userAverage = "No Reviews yet"
         
@@ -373,7 +375,7 @@ const controller = {
     delete: async(req, res) => {
 
         let deleteErrand = await ErrandModel.findById(req.params.id)
-        console.log(deleteErrand)
+
 
         if (deleteErrand.user_id !== req.user.id) {
             res.status(403).json({
@@ -389,7 +391,7 @@ const controller = {
         }
         
         let user =  deleteErrand.username
-        console.log('2')
+
 
         //To send an email, if needed, to the buddy to inform him of changes
         let order_accepted =  false
@@ -398,20 +400,19 @@ const controller = {
         }
 
         let deleted = await ErrandModel.deleteOne( {_id: req.params.id})
-        console.log(deleted)
+
         await LikeModel.deleteMany({ errandId: req.params.id})
 
         if(deleteErrand.cloudinary_id) {
             cloudinary.uploader.destroy(deleteErrand.cloudinary_id)
         }
-        console.log('3')
+
         if (order_accepted) {
            
             let emailBody = `${user} deleted your errand order number ${deleteErrand._id}. Please take note. Do take a look at our site on other available errands.`
             await sendEmail(buddy.email, 'Errand deleted', emailBody)
         }
 
-        console.log('success')
         res.json(
             { 
                 success: true, 
