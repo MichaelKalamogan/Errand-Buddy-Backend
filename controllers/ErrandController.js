@@ -462,12 +462,13 @@ const controller = {
     },
 
     buddyCancel: async (req, res) => {
-        
-        const { errandId } =  req.params
+
+        const  errandId  =  req.params.id
         
         let errand = await ErrandModel.findById(errandId)
 
         if (errand.fulfilled_by !== req.user.id) {
+            console.log('here')
             res.json({
                 success: false,
                 "msg": "Unauthorised"
@@ -476,7 +477,7 @@ const controller = {
             return
         }
 
-        await ErrandModel.findOneAndUpdate({id: errandId } ,         
+        let updatedErrand = await ErrandModel.findOneAndUpdate({_id: errandId } ,         
             { 
                 $set: { 
                     fulfilled_by: "",
@@ -484,7 +485,7 @@ const controller = {
                 }
             }, 
         )
-        
+
         let user = await UserModel.findById(errand.user_id)
         let emailBody = `Your buddy cancelled the acceptance of your order "${errandId.items}". Please take note of the updated changes.`
         await sendEmail(user.email, 'Buddy cancelled your order', emailBody)

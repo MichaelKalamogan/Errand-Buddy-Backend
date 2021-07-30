@@ -31,7 +31,7 @@ router.post('/:id/completed', authenticated, errandController.complete)
 router.get('/:id/update', authenticated, errandController.edit)
 
 //Buddy to cancel errand order that he accepted
-router.patch('/:id/buddycancel', authenticated, errandController.buddyCancel)
+router.post('/:id/buddycancel', authenticated, errandController.buddyCancel)
 
 //Update the errand
 router.patch('/:id/update', authenticated, upload.single("image"), errandController.update)
