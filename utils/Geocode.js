@@ -13,9 +13,15 @@ const Geocode =  async (postal) =>  {
         }
     })  
 
+    let x
+
+    if(latLongInfo.data.results[0].geometry.location) {
+        
+        x = latLongInfo.data.results[0].geometry.location
+    }
     
     
-    return latLongInfo.data.results[0].geometry.location
+    return x
 
   
 }
