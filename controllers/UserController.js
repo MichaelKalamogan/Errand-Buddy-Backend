@@ -298,7 +298,7 @@ const controller = {
 
     //Create an Errand
     create: async (req, res) => {
-    
+        console.log('1')
         const { 
             category, 
             items, 
@@ -311,6 +311,7 @@ const controller = {
             errandFee, 
 
         } = req.body
+        console.log
 
         const totalPrice = Number(itemPrice) + Number(errandFee)
      

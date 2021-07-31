@@ -1,74 +1,38 @@
-# Errand Buddy - Providing Errand for a Fee
+## Errand Buddy - Helping With Your Errands Daily
 
-## User Story
-An online marketplace for users to list services or errands to be fulfilled for a fee
+The intent of the site is to provide an online p2p marketplace for users to errands such as dog walks, pet sitting, picking up groceries, queuing for the latest phone or sneaker launch, etc. Users can list the errands they wish to outsource for a pre-determined fee and, other users (whom we call the buddy) can accept these errands.
 
-## App Link
+* Built as part of a project for a software engineering course.
+* Mern Stack App
+* The amin page can be accessed at the following url: https://thanks-buddy.herokuapp.com/
+* Frontend uses HTML, CSS, Javascript, React.js. Can be accessed at the following url: https://github.com/MichaelKalamogan/Errand-Buddy-Frontend
 
-https://thanks-buddy.herokuapp.com/
 
-## Tech Stack / Libraries
-* ReactJs
+## Tech Stack / Libraries for backend
+
 * Javascript
-* NodeJs
+* Node.Js
 * Express
+* Mongoose
 * MongoDB
-* JWT
-* Material UI
-* Bootstrap
+* JsonWebToken
 * Nodemailer
-* Moment
 * Date fns
 
 ## API Used
 * Stripe
 * Google map
 
-## App Features
+#### Authentication
+* Authentication is done by using jsonwebtoken and localstorage stores the token for authenticating the client side routes, where needed.
+* Reset password uses jsonwebtoken to send a link, through nodemailer, that is valid for a short period of time.
 
-*  New User can see lists of errands posted at the Homepage
-*  After successful login/register , User can accept or create errands which can be accepted by other users
-*  Upon completion of errand, User can submit review and ratings of the other users which will be reflected in users dashboard
-*  Errands not yet accepted can be edited or deleted
-*  Payment page via Stripe will be reflected in users wallet
-*  Payment received from other users will be reflected in dashboard
+#### Uploading of files
+Images are uploaded to cloudinary using multer and streamify, so as to minimise any local disk storage: https://cloudinary.com/blog/node_js_file_upload_to_a_local_server_or_to_the_cloud
+* A cloudinary id was included in errand schemas to faciliate the deletion of previous images whenever there is an update to the image or the errand is deleted.
 
-
-
-## Wireframes
-
-
-
-<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Wireframe1.jpeg width="500" height="400">
-<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Wireframe2.jpeg width="500" height="400">
-<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Wireframe3.jpeg width="500" height="400">
-
-
-# Actual App
-
-### Home Page
-<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Homepage.jpg width="600" height="400">
-
-### Login Page
-<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Login.png width="600" height="400">
-
-### Show Page
-<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Showcard%20w%20login.png width="600" height="400">
-
-### Dashboard
-<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Buddy%20in%20progress.png width="600" height="400">
-
-### Create Errand
-<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Create%20errand.png width="600" height="400">
-
-### Modify Errand
-<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Modify%20errand.png width="600" height="400">
-
-### Edit & Delete Errand
-<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Edit%20and%20delete.png width="600" height="400">
-
-### Ratings & Review
-<img src=https://github.com/MichaelKalamogan/Errand-Buddy-Frontend/blob/yaqin10/errand-buddy-fe/public/Readme/Ratings%20and%20review.png width="600" height="400">
+# Suggestions and Improvements
+Will appreciate any suggestions and improvements to the code, layout, user interface or even the basic idea itself. Thank you. 
 
 
 ## Restful Routes
@@ -105,8 +69,5 @@ https://thanks-buddy.herokuapp.com/
 
 ## Area of Improvements
 
-* Components in the dashboard page could further broken into several components
-* The styling could be improved more
-* Web app to be more responsive e.g. mobile, tablet etc
-
+* Some of the repeated code could be broken into functions.
 
