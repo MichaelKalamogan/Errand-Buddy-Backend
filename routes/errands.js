@@ -12,6 +12,9 @@ const { authenticated } = require('../middleware/authenticate')
 //Retrieve likes
 router.post('/like', likeController.like)
 
+//Create Errand
+router.post('/create-errand', authenticated, upload.single("image"), errandController.create)
+
 //Add likes
 router.post('/like/addLike', likeController.addLike)
 
@@ -41,6 +44,8 @@ router.delete('/:id/delete', authenticated, errandController.delete)
 
 //Reviews for the errand
 router.post('/:id/completed/review', authenticated, errandController.review)
+
+
 
 //Update payment
 router.patch('/successfulpayment', authenticated, errandController.successfulPayment)

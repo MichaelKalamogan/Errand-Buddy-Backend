@@ -10,6 +10,7 @@ const { update } = require('../models/User')
 const { number } = require('joi')
 const cloudinary = require('../config/cloudinary-config')
 const {streamUpload} = require('../config/multer-config')
+const geocode = require ('../utils/Geocode')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 const controller = {
@@ -500,7 +501,150 @@ const controller = {
         await sendEmail(user.email, 'Buddy cancelled your order', emailBody)
 
         res.json({success:true})
-    }
+    },
+
+        //Create an Errand
+        create: async (req, res) => {
+            console.log('1')
+            const { 
+                category, 
+                items, 
+                description, 
+                pickupLocation, 
+                deliveryLocation,
+                pickupTime,
+                deliveryTime,
+                itemPrice,
+                errandFee, 
+    
+            } = req.body
+            console.log
+    
+            const totalPrice = Number(itemPrice) + Number(errandFee)
+         
+            let newUpload = await streamUpload(req)     
+    
+            const user = await UserModel.find({_id: req.user.id}, 'username')
+            
+            let newErrand
+            let pickupLat 
+            let pickupLong 
+            let deliveryLat 
+            let deliveryLong 
+    
+            let pickupGoogle = await geocode(pickupLocation)
+    
+            if(pickupGoogle) {
+                pickupLat = pickupGoogle.lat
+                pickupLong = pickupGoogle.lng
+            }
+    
+    
+            let deliveryGoogle = await geocode(deliveryLocation)
+            if (deliveryGoogle) {
+                deliveryLat = deliveryGoogle.lat
+                deliveryLong = deliveryGoogle.lng
+            }
+    
+    
+    
+            if (newUpload) {
+    
+    
+    
+                newErrand = await ErrandModel.create ({
+    
+                    user_id: req.user.id,
+                    username: user[0].username,
+                    category: category,
+                    items: items,
+                    image: newUpload.secure_url,
+                    cloudinary_id: newUpload.public_id,
+                    description: description,
+                    pickupLocation: pickupLocation,
+                    deliveryLocation: deliveryLocation,
+                    pickupTime: pickupTime,
+                    deliveryTime: deliveryTime,
+                    itemPrice: itemPrice,
+                    errandFee: errandFee,
+                    totalPrice: totalPrice,
+                    sessionId: " ",
+        
+                })
+    
+                if (pickupGoogle || deliveryGoogle) { 
+                    await ErrandModel.findByIdAndUpdate(newErrand._id, 
+                        {
+                            $set : {
+                                pickupLatitude: pickupLat,
+                                pickupLongtitude: pickupLong,
+                                deliveryLatitude: deliveryLat,
+                                deliveryLongtitude: deliveryLong,
+                            },
+    
+                        }
+                    )
+                }
+    
+                res.json(
+                    {
+                        success: true,
+                        errandInfo: {
+                            errandId: newErrand.id,
+                            errandName: newErrand.items,
+                            errandPrice: newErrand.totalPrice,
+                            errandImage: newErrand.image,
+                        },
+                        'msg': 'Errand successfully created'
+                    }
+                )
+    
+            } else {
+    
+                newErrand = await ErrandModel.create ({
+    
+                    user_id: req.user.id,
+                    username: user[0].username,
+                    category: category,
+                    items: items,
+                    description: description,
+                    pickupLocation: pickupLocation,
+                    deliveryLocation: deliveryLocation,
+                    pickupTime: pickupTime,
+                    deliveryTime: deliveryTime,
+                    itemPrice: itemPrice,
+                    errandFee: errandFee,
+                    sessionId: " ",
+        
+                })
+    
+                if (pickupGoogle && deliveryGoogle) { 
+                    await ErrandModel.findByIdAndUpdate (newErrand._id, 
+                        {
+                            $set : {
+                                pickupLatitude: pickupLat,
+                                pickupLongtitude: pickupLong,
+                                deliveryLatitude: deliveryLat,
+                                deliveryLongtitude: deliveryLong,
+                            },
+    
+                        }
+                    )
+                }
+    
+                res.json(
+                    {
+                        success: true,
+                        errandInfo: {
+                            errandId: newErrand.id,
+                            errandName: newErrand.items,
+                            errandPrice: newErrand.totalPrice,
+                        },
+                        'msg': 'Errand successfully created'
+                    }
+                )
+            }   
+        },
 }
 
 module.exports = controller
