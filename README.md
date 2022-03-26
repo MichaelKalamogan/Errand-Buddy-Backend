@@ -4,7 +4,6 @@ The intent of the site is to provide an online p2p marketplace for users to erra
 
 * Built as part of a project for a software engineering course.
 * Mern Stack App
-* The amin page can be accessed at the following url: https://thanks-buddy.herokuapp.com/
 * Frontend uses HTML, CSS, Javascript, React.js. Can be accessed at the following url: https://github.com/MichaelKalamogan/Errand-Buddy-Frontend
 
 
